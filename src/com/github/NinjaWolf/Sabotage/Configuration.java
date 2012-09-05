@@ -1,6 +1,5 @@
 package com.github.NinjaWolf.Sabotage;
 
-
 public class Configuration {
     
     private final Sabotage plugin;
