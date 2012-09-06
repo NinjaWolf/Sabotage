@@ -22,24 +22,28 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (plugin.Teams.get(player.getName()) != "Lobby") {
+        String Name = player.getName();
+        String getTeam = plugin.Teams.get(Name);
+        
+        if (getTeam != "Lobby")
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }
-            }
-                event.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (plugin.Teams.get(player.getName()) != "Lobby") {
+        String Name = player.getName();
+        String getTeam = plugin.Teams.get(Name);
+        
+        if (getTeam != "Lobby")
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }
-            }
-                event.setCancelled(true);
+        event.setCancelled(true);
         
     }
     

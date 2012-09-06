@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+//import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class PlayerListener implements Listener {
-    
-    private final Sabotage plugin;
+    Sabotage plugin;
     
     public PlayerListener(Sabotage instance) {
         plugin = instance;
@@ -25,14 +25,18 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String realName = player.getName();
-        Bukkit.getServer().getWorld("sabotage").setSpawnLocation(0, 66, 0);
-        Location lobby = Bukkit.getServer().getWorld("sabotage").getSpawnLocation();
+        String Name = player.getName();
+        String displayName = player.getDisplayName();
+        ChatColor purple = ChatColor.DARK_PURPLE;
         
-        plugin.Teams.put(realName, "Lobby");
+        Bukkit.getServer().getWorld("world").setSpawnLocation(0, 66, 0);
+        Location lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
+        
+        plugin.Teams.put(Name, "Lobby");
         player.teleport(lobby);
-        event.setJoinMessage(ChatColor.DARK_PURPLE + "You are in the Lobby. Play Nice, and Have Fun!");
-    
+        player.sendMessage(purple + "Welcome " + displayName + ",");
+        player.sendMessage(purple + "You are in the Lobby. Play Nice, and Have Fun!");
+        
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -40,14 +44,42 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
         String Name = player.getName();
+        String getTeam = plugin.Teams.get(Name);
         
-        if (plugin.Teams.get(player.getName()) != "leave")
+        if (getTeam != "Lobby") {
             Bukkit.broadcastMessage(displayName + " Left the Game and has been moved back to the Lobby");
+        }
         
         plugin.Teams.remove(Name);
         event.setQuitMessage(displayName + " has Left the game");
         
-        if (plugin.Teams.get(Name) != null)
-            plugin.getLogger().log(Level.INFO, "Holy Shit Batman, The onPlayerQuit function dun Goofed, Tell the Developer ASAP!");
+        if (getTeam != null) {
+            plugin.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerQuit function dun Goofed, Tell the Developer ASAP!");
+        }
     }
 }
+    /** Spams Console, line 64
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerAttack(EntityDamageByEntityEvent event) {
+        Player Attacker = (Player) event.getDamager();
+        Player player = (Player) event.getEntity();
+        String redTeam = plugin.Teams.get("Red");
+        String blueTeam = plugin.Teams.get("Blue");
+        String Killer = Attacker.getName();
+        String Name = player.getName();
+        String getTeam = plugin.Teams.get(Name);
+        
+        if (Attacker instanceof Player)
+            if ((getTeam != "Red") || (getTeam != "Blue")) {
+                event.setCancelled(true);
+            }
+        
+        if (redTeam.contains(Killer) && redTeam.contains(Name)) {
+            event.setCancelled(true);
+        } else if (blueTeam.contains(Killer) && blueTeam.contains(Name)) {
+            event.setCancelled(true);
+        }
+        
+    }
+}
+*/

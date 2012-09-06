@@ -24,7 +24,7 @@ public class Sabotage extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
-        PluginDescriptionFile   pdfFile        = getDescription();
+        PluginDescriptionFile pdfFile = getDescription();
         
         if (!config_file.exists()) {
             getConfig().options().copyDefaults(true);
@@ -40,7 +40,7 @@ public class Sabotage extends JavaPlugin {
     @Override
     public void onDisable() {
         
-        getLogger().log(Level.INFO, " is now Disabled.");
+        getLogger().log(Level.INFO, "Disabled.");
         
     }
     
