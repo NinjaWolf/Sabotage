@@ -26,8 +26,8 @@ public class BlockListener implements Listener {
         String getTeam = plugin.Teams.get(Name);
         
         if (getTeam != "Lobby")
-            if (!(block.getType() == Material.LADDER)) {
-                event.setCancelled(true);
+            if (block.getType() == Material.LADDER) {
+                event.setCancelled(false);
             }
         event.setCancelled(true);
     }
@@ -40,8 +40,8 @@ public class BlockListener implements Listener {
         String getTeam = plugin.Teams.get(Name);
         
         if (getTeam != "Lobby")
-            if (!(block.getType() == Material.LADDER)) {
-                event.setCancelled(true);
+            if (block.getType() == Material.LADDER) {
+                event.setCancelled(false);
             }
         event.setCancelled(true);
         
