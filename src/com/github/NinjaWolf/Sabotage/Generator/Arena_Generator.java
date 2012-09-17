@@ -15,7 +15,7 @@ public class Arena_Generator extends ChunkGenerator {
         
         for (x = 0; x < 16; x++) {
             for (z = 0; z < 16; z++) {
-                setBlock(result, x, 64, z, (byte) Material.BEDROCK.getId());
+                setBlock(result, x, 64, z, (byte) Material.WOOL.getId());
             }
         }
         return result;

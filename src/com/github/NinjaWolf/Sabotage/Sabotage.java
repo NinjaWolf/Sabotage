@@ -48,4 +48,25 @@ public class Sabotage extends JavaPlugin {
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new Arena_Generator();
     }
+    
+    public boolean inLobby(String playerName) {
+        if (Teams.get("Lobby").contains(playerName)) { 
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean inBlueTeam(String playerName) {
+        if (Teams.get("Blue").contains(playerName)) { 
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean inRedTeam(String playerName) {
+        if (Teams.get("Red").contains(playerName)) { 
+            return true;
+        }
+        return false;
+    }
 }

@@ -7,3 +7,6 @@ author: NinjaWolf
 website: https://github.com/NinjaWolf/Sabotage
 commands:
 permissions:
+    st.admin:
+        description: Gives Admin control over plugin.
+        default: op
