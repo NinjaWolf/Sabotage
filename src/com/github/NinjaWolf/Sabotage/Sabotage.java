@@ -1,6 +1,7 @@
 package com.github.NinjaWolf.Sabotage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -33,6 +34,13 @@ public class Sabotage extends JavaPlugin {
         
         pm.registerEvents(playerListener, this);
         pm.registerEvents(blockListener, this);
+        
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            getLogger().log(Level.INFO, "Metrics Couldn't Be Loaded For Sabotage.");
+        }
         
         getLogger().log(Level.INFO, "Version: " + pdfFile.getVersion() + " is now Enabled.");
     }
