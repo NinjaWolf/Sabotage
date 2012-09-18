@@ -12,56 +12,70 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
+import com.github.NinjaWolf.Sabotage.Managers.Teams;
 
 public class PlayerListener implements Listener {
-    Sabotage plugin;
+    Sabotage Main;
+    Teams Tm;
     
-    public PlayerListener(Sabotage instance) {
-        plugin = instance;
-    }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String Name = player.getName();
         String displayName = player.getDisplayName();
         ChatColor purple = ChatColor.LIGHT_PURPLE;
         
-        Bukkit.getServer().getWorld("world").setSpawnLocation(0, 66, 0);
+        Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
         Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
         
-        plugin.Teams.put("Lobby", Name);
+        Main.Teams.put("Lobby", Name);
         player.teleport(Lobby);
         player.sendMessage(purple + "Welcome " + displayName + ",");
         player.sendMessage(purple + "You are in the Lobby. Play Nice, and Have Fun!");
         
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
-        String getTeam = plugin.Teams.get(player.getName());
+        String getTeam = Main.Teams.get(player.getName());
         
-        if (plugin.inLobby(player.getName()) == false) {
+        if (Main.inLobby(player.getName()) == false) {
             Bukkit.broadcastMessage(displayName + " Left the Game and has been moved back to the Lobby");
         }
-        plugin.Teams.remove(player.getName());
-        event.setQuitMessage(displayName + " has Left the game");
+        Main.Teams.remove(player.getName());
+        event.setQuitMessage(displayName + " has Left the game.");
         
         if (getTeam != null) {
-            plugin.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerQuit function dun Goofed, Tell the Developer ASAP!");
+            Main.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerQuit function dun Goofed, Tell the Developer ASAP!");
         }
     }
     
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
         event.setRespawnLocation(Lobby);
+    }
+    
+    @EventHandler(priority= EventPriority.HIGHEST, ignoreCancelled= true)
+    public void onPlayerKick(PlayerKickEvent event) {
+        Player player = event.getPlayer();
+        String displayName = player.getDisplayName();
+        String getTeam = Main.Teams.get(player.getName());
+        
+        Main.Teams.remove(player.getName());
+        event.setLeaveMessage(displayName + " was Kicked from the game.");
+        
+        if (getTeam != null) {
+            Main.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerKick function dun Goofed, Tell the Developer ASAP!");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -76,16 +90,16 @@ public class PlayerListener implements Listener {
             ChatColor blue = ChatColor.BLUE;
             ChatColor green = ChatColor.GREEN;
             
-            if (plugin.inLobby(player.getName()) == true || plugin.inLobby(attacker.getName()) == true) {
+            if (Main.inLobby(player.getName()) == true || Main.inLobby(attacker.getName()) == true) {
                 event.setCancelled(true);
                 attacker.sendMessage(green + "PvP is Disabled in the Lobby!");
                 return;
             }
             
-            if (plugin.inRedTeam(attacker.getName()) == true && plugin.inRedTeam(player.getName()) == true) {
+            if (Main.inRedTeam(attacker.getName()) == true && Main.inRedTeam(player.getName()) == true) {
                 event.setCancelled(true);
                 attacker.sendMessage(red + "PvP is Disabled Between Teammates!");
-            } else if (plugin.inBlueTeam(attacker.getName()) == true && plugin.inBlueTeam(player.getName()) == true) {
+            } else if (Main.inBlueTeam(attacker.getName()) == true && Main.inBlueTeam(player.getName()) == true) {
                 event.setCancelled(true);
                 attacker.sendMessage(blue + "PvP is Disabled Between Teammates!");
         }
@@ -99,20 +113,28 @@ public class PlayerListener implements Listener {
                 ChatColor blue = ChatColor.BLUE;
                 ChatColor green = ChatColor.GREEN;
                 
-            if (plugin.inLobby(player.getName()) == true || plugin.inLobby(shooter.getName()) == true) {
+            if (Main.inLobby(player.getName()) == true || Main.inLobby(shooter.getName()) == true) {
                 event.setCancelled(true);
                 shooter.sendMessage(green + "PvP is Disabled in the Lobby!");
                 return;
             }
                 
-            if (plugin.inRedTeam(shooter.getName()) == true && plugin.inRedTeam(player.getName()) == true) {
+            if (Main.inRedTeam(shooter.getName()) == true && Main.inRedTeam(player.getName()) == true) {
                 event.setCancelled(true);
                 shooter.sendMessage(red + "PvP is Disabled Between Teammates!");
-            } else if (plugin.inBlueTeam(shooter.getName()) == true && plugin.inBlueTeam(player.getName()) == true) {
+            } else if (Main.inBlueTeam(shooter.getName()) == true && Main.inBlueTeam(player.getName()) == true) {
                 event.setCancelled(true);
                 shooter.sendMessage(blue + "PvP is Disabled Between Teammates!");
         }
                 }
             }
         }
+    
+    public PlayerListener(Sabotage instance) {
+        Main = instance;
+    }
+    
+    public PlayerListener(Teams instance) {
+        Tm = instance;
+    }
     }

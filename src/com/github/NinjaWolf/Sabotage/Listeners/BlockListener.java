@@ -12,15 +12,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
+import com.github.NinjaWolf.Sabotage.Permissions;
+import com.github.NinjaWolf.Sabotage.Managers.Teams;
 
 public class BlockListener implements Listener {
-    Sabotage plugin;
-    
-    public BlockListener(Sabotage instance) {
-        plugin = instance;
-    }
-    
-    
+    Sabotage Main;
+    Teams Tm;
+
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignChange(SignChangeEvent event) {
         Player player = event.getPlayer();
@@ -29,7 +28,7 @@ public class BlockListener implements Listener {
         if (!event.getLine(0).equalsIgnoreCase("[Sabotage]"))
             return;
         
-        if (player.hasPermission("st.admin")) {
+        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION)) {
             if (event.getLine(1).equalsIgnoreCase("Join") && event.getLine(2).isEmpty() && event.getLine(3).isEmpty()
             ||  event.getLine(2).equalsIgnoreCase("Join") && event.getLine(1).isEmpty() && event.getLine(3).isEmpty()
             ||  event.getLine(3).equalsIgnoreCase("Join") && event.getLine(1).isEmpty() && event.getLine(2).isEmpty()) {
@@ -50,29 +49,39 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        if (player.hasPermission("st.admin"))
+        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
         
-        if (!plugin.inLobby(player.getName())) {
+        if (!Main.inLobby(player.getName())) {
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }
             }
                 event.setCancelled(true);
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         
-        if (player.hasPermission("st.admin"))
+        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
         
-        if (!plugin.inLobby(player.getName())) {
+        if (!Main.inLobby(player.getName())) {
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }
             }
                 event.setCancelled(true);
+    }
+    
+    
+    public BlockListener(Sabotage instance) {
+        Main = instance;
+    }
+    
+    public BlockListener(Teams instance) {
+        Tm = instance;
     }
 }

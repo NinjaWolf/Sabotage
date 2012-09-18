@@ -17,8 +17,8 @@ public class Sabotage extends JavaPlugin {
     
     private final PlayerListener         playerListener = new PlayerListener(this);
     private final BlockListener          blockListener  = new BlockListener(this);
-    public final Configuration           config         = new Configuration(this);
     public final HashMap<String, String> Teams          = new HashMap<String, String>();
+    public final Configuration           config         = new Configuration(this);
     public final File                    config_file    = new File(getDataFolder(), "config.yml");
     
     @Override
