@@ -4,20 +4,24 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
-import com.github.NinjaWolf.Sabotage.Managers.Teams;
+import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 
 public class PlayerListener implements Listener {
     Sabotage Main;
@@ -39,6 +43,18 @@ public class PlayerListener implements Listener {
         player.sendMessage(purple + "Welcome " + displayName + ",");
         player.sendMessage(purple + "You are in the Lobby. Play Nice, and Have Fun!");
         
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+    	Player	player = event.getPlayer();
+    	
+    	if(!(event.getAction() == Action.RIGHT_CLICK_BLOCK))
+    		return;
+    	
+    	if (event.getMaterial() == Material.SIGN || event.getMaterial() == Material.SIGN_POST) {
+    		player.playEffect(EntityEffect.HURT);
+    	}
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -80,52 +96,50 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player) || (event.isCancelled()))
             return;
 
         if ((event.getDamager() instanceof Player)) {
             Player attacker = (Player) event.getDamager();
             Player player = (Player) event.getEntity();
-            ChatColor red = ChatColor.RED;
-            ChatColor blue = ChatColor.BLUE;
             ChatColor green = ChatColor.GREEN;
             
-            if (Main.inLobby(player.getName()) == true || Main.inLobby(attacker.getName()) == true) {
-                event.setCancelled(true);
-                attacker.sendMessage(green + "PvP is Disabled in the Lobby!");
-                return;
-            }
-            
-            if (Main.inRedTeam(attacker.getName()) == true && Main.inRedTeam(player.getName()) == true) {
-                event.setCancelled(true);
-                attacker.sendMessage(red + "PvP is Disabled Between Teammates!");
-            } else if (Main.inBlueTeam(attacker.getName()) == true && Main.inBlueTeam(player.getName()) == true) {
-                event.setCancelled(true);
-                attacker.sendMessage(blue + "PvP is Disabled Between Teammates!");
-        }
-        }
+	            if (Main.inLobby(player.getName()) == true) {
+	                event.setCancelled(true);
+	                attacker.sendMessage(green + "You Cannot attack a player in the Lobby!");
+	            } 
+	            else if (Main.inLobby(attacker.getName()) == true) {
+	            	event.setCancelled(true);
+	            	attacker.sendMessage(green + "You Cannot attack while in the Lobby!");
+	            }
+	            
+	            if ((Main.inRedTeam(attacker.getName()) == true && Main.inRedTeam(player.getName()) == true)
+	            || (Main.inBlueTeam(attacker.getName()) == true && Main.inBlueTeam(player.getName()) == true)) {
+	                event.setCancelled(true);
+	                attacker.sendMessage(green + "PvP is Disabled Between Teammates!");
+            	}
+	        }
         else if (event.getDamager() instanceof Arrow) {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Player) {
                 Player player = (Player) event.getEntity();
                 Player shooter = (Player) arrow.getShooter();
-                ChatColor red = ChatColor.RED;
-                ChatColor blue = ChatColor.BLUE;
                 ChatColor green = ChatColor.GREEN;
                 
-            if (Main.inLobby(player.getName()) == true || Main.inLobby(shooter.getName()) == true) {
-                event.setCancelled(true);
-                shooter.sendMessage(green + "PvP is Disabled in the Lobby!");
-                return;
-            }
+	            if (Main.inLobby(player.getName()) == true) {
+	                event.setCancelled(true);
+	                shooter.sendMessage(green + "You Cannot attack a player in the Lobby!");
+	            } 
+	            else if (Main.inLobby(shooter.getName()) == true) {
+	            	event.setCancelled(true);
+	            	shooter.sendMessage(green + "You Cannot attack while in the Lobby!");
+	            }
                 
-            if (Main.inRedTeam(shooter.getName()) == true && Main.inRedTeam(player.getName()) == true) {
-                event.setCancelled(true);
-                shooter.sendMessage(red + "PvP is Disabled Between Teammates!");
-            } else if (Main.inBlueTeam(shooter.getName()) == true && Main.inBlueTeam(player.getName()) == true) {
-                event.setCancelled(true);
-                shooter.sendMessage(blue + "PvP is Disabled Between Teammates!");
-        }
+	            if ((Main.inRedTeam(shooter.getName()) == true && Main.inRedTeam(player.getName()) == true)
+	            || (Main.inBlueTeam(shooter.getName()) == true && Main.inBlueTeam(player.getName()) == true)) {
+	                event.setCancelled(true);
+	                shooter.sendMessage(green + "PvP is Disabled Between Teammates!");
+            	}
                 }
             }
         }
@@ -137,4 +151,5 @@ public class PlayerListener implements Listener {
     public PlayerListener(Teams instance) {
         Tm = instance;
     }
+
     }

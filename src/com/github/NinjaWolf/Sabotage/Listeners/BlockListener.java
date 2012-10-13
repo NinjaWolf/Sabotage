@@ -1,6 +1,5 @@
 package com.github.NinjaWolf.Sabotage.Listeners;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,31 +12,27 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Permissions;
-import com.github.NinjaWolf.Sabotage.Managers.Teams;
+import com.github.NinjaWolf.Sabotage.Handlers.Teams;
+import com.github.NinjaWolf.Sabotage.Handlers.SignHandler;
 
 public class BlockListener implements Listener {
     Sabotage Main;
     Teams Tm;
 
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignChange(SignChangeEvent event) {
         Player player = event.getPlayer();
-        ChatColor green = ChatColor.GREEN;
+        String[] line = event.getLines();
 
         if (!event.getLine(0).equalsIgnoreCase("[Sabotage]"))
             return;
         
         if (Permissions.hasPermission(player, Permissions.ADMINISTRATION)) {
-            if (event.getLine(1).equalsIgnoreCase("Join") && event.getLine(2).isEmpty() && event.getLine(3).isEmpty()
-            ||  event.getLine(2).equalsIgnoreCase("Join") && event.getLine(1).isEmpty() && event.getLine(3).isEmpty()
-            ||  event.getLine(3).equalsIgnoreCase("Join") && event.getLine(1).isEmpty() && event.getLine(2).isEmpty()) {
+            if (line[1].equalsIgnoreCase("Join") && line[2].isEmpty() && line[3].isEmpty()
+            ||  line[2].equalsIgnoreCase("Join") && line[1].isEmpty() && line[3].isEmpty()
+            ||  line[3].equalsIgnoreCase("Join") && line[1].isEmpty() && line[2].isEmpty()) {
 
-                event.setLine(0, green + "   [Sabotage]   ");
-                event.setLine(1, null);
-                event.setLine(2, green + "  [Join Game]   ");
-                event.setLine(3, null);
-                player.sendMessage(green + "[Sabotage] Game Sign Created Successfully!");
+            	SignHandler.getInstance().createJoinGameSign(player, event);
                 return;
             }
 
@@ -84,4 +79,5 @@ public class BlockListener implements Listener {
     public BlockListener(Teams instance) {
         Tm = instance;
     }
+    
 }
