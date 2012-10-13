@@ -27,6 +27,15 @@ public class SignHandler {
             player.sendMessage(green + "[Sabotage]  " + bold + ul + "JOIN" + reset + green +" Game Sign Created Successfully!");
 	}
 	
+	public void createLeaveGameSign(Player player, SignChangeEvent event) {
+		gameSign(event);
+        event.setLine(2, green + "  [Leave Game]   ");
+        updateSign(event);
+        
+        // TODO: Make a Chat Handler to get rid of this mess
+        player.sendMessage(green + "[Sabotage]  " + bold + ul + "LEAVE" + reset + green +" Game Sign Created Successfully!");
+	}
+	
 	
 		
 	public void gameSign(SignChangeEvent event) {

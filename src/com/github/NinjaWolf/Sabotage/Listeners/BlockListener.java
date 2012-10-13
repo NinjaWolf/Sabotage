@@ -14,6 +14,7 @@ import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Permissions;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 import com.github.NinjaWolf.Sabotage.Handlers.SignHandler;
+import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 
 public class BlockListener implements Listener {
     Sabotage Main;
@@ -34,8 +35,14 @@ public class BlockListener implements Listener {
 
             	SignHandler.getInstance().createJoinGameSign(player, event);
                 return;
+            } else
+            	if (line[1].equalsIgnoreCase("Leave") && line[2].isEmpty() && line[3].isEmpty()
+                        ||  line[2].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[3].isEmpty()
+                        ||  line[3].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[2].isEmpty()) {
+            		
+            	SignHandler.getInstance().createLeaveGameSign(player, event);
+            	return;
             }
-
         }
     }
 
@@ -47,7 +54,7 @@ public class BlockListener implements Listener {
         if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
         
-        if (!Main.inLobby(player.getName())) {
+        if (TeamsHandler.getInstance().isInGame(player)) {
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }
@@ -63,7 +70,7 @@ public class BlockListener implements Listener {
         if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
         
-        if (!Main.inLobby(player.getName())) {
+        if (TeamsHandler.getInstance().isInGame(player)) {
             if (!(block.getType() == Material.LADDER)) {
                 event.setCancelled(true);
             }

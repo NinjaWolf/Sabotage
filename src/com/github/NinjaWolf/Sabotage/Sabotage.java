@@ -2,7 +2,6 @@ package com.github.NinjaWolf.Sabotage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.generator.ChunkGenerator;
@@ -18,7 +17,6 @@ public class Sabotage extends JavaPlugin {
     
     private final PlayerListener         playerListener = new PlayerListener(this);
     private final BlockListener          blockListener  = new BlockListener(this);
-    public final HashMap<String, String> Teams          = new HashMap<String, String>();
     public final Configuration           config         = new Configuration(this);
     public final File                    config_file    = new File(getDataFolder(), "config.yml");
     
@@ -55,26 +53,5 @@ public class Sabotage extends JavaPlugin {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new Arena_Generator();
-    }
-    
-    public boolean inLobby(String playerName) {
-        if (Teams.get("Lobby").contains(playerName)) { 
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean inBlueTeam(String playerName) {
-        if (Teams.get("Blue").contains(playerName)) { 
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean inRedTeam(String playerName) {
-        if (Teams.get("Red").contains(playerName)) { 
-            return true;
-        }
-        return false;
     }
 }

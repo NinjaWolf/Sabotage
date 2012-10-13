@@ -1,12 +1,10 @@
 package com.github.NinjaWolf.Sabotage.Listeners;
 
-import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,25 +18,25 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import com.github.NinjaWolf.Sabotage.Permissions;
 import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
+import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 
 public class PlayerListener implements Listener {
     Sabotage Main;
-    Teams Tm;
     
     
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String Name = player.getName();
         String displayName = player.getDisplayName();
         ChatColor purple = ChatColor.LIGHT_PURPLE;
         
         Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
         Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
         
-        Main.Teams.put("Lobby", Name);
+        TeamsHandler.getInstance().addToLobby(player);
         player.teleport(Lobby);
         player.sendMessage(purple + "Welcome " + displayName + ",");
         player.sendMessage(purple + "You are in the Lobby. Play Nice, and Have Fun!");
@@ -47,13 +45,34 @@ public class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
-    	Player	player = event.getPlayer();
-    	
-    	if(!(event.getAction() == Action.RIGHT_CLICK_BLOCK))
-    		return;
-    	
-    	if (event.getMaterial() == Material.SIGN || event.getMaterial() == Material.SIGN_POST) {
-    		player.playEffect(EntityEffect.HURT);
+		Player player = event.getPlayer();
+		Block block = event.getClickedBlock();
+		Sign sign = null;
+
+		if (block == null)
+			return;
+
+		if (block.getTypeId() == 63 || block.getTypeId() == 68) {
+
+			sign = (Sign) block.getState();
+
+			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+				return;
+			}
+
+			if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "   [Sabotage]   ")) {
+				return;
+			}
+
+			if (Permissions.hasPermission(player, Permissions.JOIN)) {
+			if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Join Game]   ")) {
+				TeamsHandler.getInstance().joinGame(player);
+			}
+		} else
+			if (Permissions.hasPermission(player, Permissions.LEAVE))
+				if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Leave Game]   ")) {
+					TeamsHandler.getInstance().leaveGame(player);
+			}
     	}
     }
     
@@ -61,17 +80,13 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
-        String getTeam = Main.Teams.get(player.getName());
         
-        if (Main.inLobby(player.getName()) == false) {
+        if (TeamsHandler.getInstance().isInGame(player)) {
             Bukkit.broadcastMessage(displayName + " Left the Game and has been moved back to the Lobby");
         }
-        Main.Teams.remove(player.getName());
+        TeamsHandler.getInstance().removeFromTeam(player);
         event.setQuitMessage(displayName + " has Left the game.");
-        
-        if (getTeam != null) {
-            Main.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerQuit function dun Goofed, Tell the Developer ASAP!");
-        }
+
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -84,14 +99,10 @@ public class PlayerListener implements Listener {
     public void onPlayerKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
-        String getTeam = Main.Teams.get(player.getName());
         
-        Main.Teams.remove(player.getName());
+        TeamsHandler.getInstance().removeFromTeam(player);
         event.setLeaveMessage(displayName + " was Kicked from the game.");
-        
-        if (getTeam != null) {
-            Main.getLogger().log(Level.WARNING, "Holy Shit Batman, The onPlayerKick function dun Goofed, Tell the Developer ASAP!");
-        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -104,17 +115,19 @@ public class PlayerListener implements Listener {
             Player player = (Player) event.getEntity();
             ChatColor green = ChatColor.GREEN;
             
-	            if (Main.inLobby(player.getName()) == true) {
+	            if (Teams.getInstance().inLobby(player.getName()) == true) {
 	                event.setCancelled(true);
 	                attacker.sendMessage(green + "You Cannot attack a player in the Lobby!");
+	                return;
 	            } 
-	            else if (Main.inLobby(attacker.getName()) == true) {
+	            else if (Teams.getInstance().inLobby(attacker.getName()) == true) {
 	            	event.setCancelled(true);
 	            	attacker.sendMessage(green + "You Cannot attack while in the Lobby!");
+	            	return;
 	            }
 	            
-	            if ((Main.inRedTeam(attacker.getName()) == true && Main.inRedTeam(player.getName()) == true)
-	            || (Main.inBlueTeam(attacker.getName()) == true && Main.inBlueTeam(player.getName()) == true)) {
+	            if ((Teams.getInstance().inRedTeam(attacker.getName()) == true && Teams.getInstance().inRedTeam(player.getName()) == true)
+	            || (Teams.getInstance().inBlueTeam(attacker.getName()) == true && Teams.getInstance().inBlueTeam(player.getName()) == true)) {
 	                event.setCancelled(true);
 	                attacker.sendMessage(green + "PvP is Disabled Between Teammates!");
             	}
@@ -126,17 +139,19 @@ public class PlayerListener implements Listener {
                 Player shooter = (Player) arrow.getShooter();
                 ChatColor green = ChatColor.GREEN;
                 
-	            if (Main.inLobby(player.getName()) == true) {
+	            if (Teams.getInstance().inLobby(player.getName()) == true) {
 	                event.setCancelled(true);
 	                shooter.sendMessage(green + "You Cannot attack a player in the Lobby!");
+	                return;
 	            } 
-	            else if (Main.inLobby(shooter.getName()) == true) {
+	            else if (Teams.getInstance().inLobby(shooter.getName()) == true) {
 	            	event.setCancelled(true);
 	            	shooter.sendMessage(green + "You Cannot attack while in the Lobby!");
+	            	return;
 	            }
                 
-	            if ((Main.inRedTeam(shooter.getName()) == true && Main.inRedTeam(player.getName()) == true)
-	            || (Main.inBlueTeam(shooter.getName()) == true && Main.inBlueTeam(player.getName()) == true)) {
+	            if ((Teams.getInstance().inRedTeam(shooter.getName()) == true && Teams.getInstance().inRedTeam(player.getName()) == true)
+	            || (Teams.getInstance().inBlueTeam(shooter.getName()) == true && Teams.getInstance().inBlueTeam(player.getName()) == true)) {
 	                event.setCancelled(true);
 	                shooter.sendMessage(green + "PvP is Disabled Between Teammates!");
             	}
@@ -147,9 +162,4 @@ public class PlayerListener implements Listener {
     public PlayerListener(Sabotage instance) {
         Main = instance;
     }
-    
-    public PlayerListener(Teams instance) {
-        Tm = instance;
-    }
-
     }
