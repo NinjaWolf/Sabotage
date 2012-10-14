@@ -10,3 +10,7 @@ permissions:
     st.admin:
         description: Gives Admin control over plugin.
         default: op
+    st.join:
+        description: Allows Player to Join the game.
+    st.leave:
+        description: Allows Player to Join the game.
