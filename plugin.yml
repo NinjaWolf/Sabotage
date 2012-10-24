@@ -6,11 +6,17 @@ description: Custom PvP Arena Plugin
 author: NinjaWolf
 website: https://github.com/NinjaWolf/Sabotage
 commands:
+    join:
+        description: Joins the Game.
+    leave:
+        description: Leaves the Game.
 permissions:
     st.admin:
         description: Gives Admin control over plugin.
         default: op
     st.join:
         description: Allows Player to Join the game.
+        default: op
     st.leave:
-        description: Allows Player to Join the game.
+        description: Allows Player to Leave the game.
+        default: op

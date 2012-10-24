@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
         
     }
     
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
@@ -56,21 +56,20 @@ public class PlayerListener implements Listener {
 
 			sign = (Sign) block.getState();
 
-			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+			if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 				return;
-			}
 
-			if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "   [Sabotage]   ")) {
+			if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "   [Sabotage]   "))
 				return;
-			}
 
 			if (Permissions.hasPermission(player, Permissions.JOIN)) {
-			if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Join Game]   ")) {
+			if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Join Game]  ")) {
 				TeamsHandler.getInstance().joinGame(player);
 			}
-		} else
-			if (Permissions.hasPermission(player, Permissions.LEAVE))
-				if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Leave Game]   ")) {
+			} else
+			  if (Permissions.hasPermission(player, Permissions.LEAVE))
+			      Main.getConfig().addDefault("Sabotage.Signs.Active.leave", true);
+			    if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + " [Leave Game]")) {
 					TeamsHandler.getInstance().leaveGame(player);
 			}
     	}

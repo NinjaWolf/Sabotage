@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
@@ -41,17 +43,23 @@ public class TeamsHandler {
 	public void addToTeam(String team, Player player) {
 		if (team == "Blue") {
 			blueList.add(player.getName());
+			lobbyList.remove(player.getName());
 			player.sendMessage(blue + "Welcome to the " + bold + "BLUE" + reset + blue + " team!");
 		} else if (team == "Red") {
 			redList.add(player.getName());
+			lobbyList.remove(player.getName());
 			player.sendMessage(red + "Welcome to the " + bold + "RED" + reset + red + " team!");
 		}
 		Teams.put("Blue", blueList);
 		Teams.put("Red", redList);
+		Teams.put("Lobby", lobbyList);
 	}
 	
 	public void addToLobby(Player player) {
+        Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
+	    Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
 		lobbyList.add(player.getName());
+		player.teleport(Lobby);
 		Teams.put("Lobby", lobbyList);
 	}
 	
@@ -63,6 +71,8 @@ public class TeamsHandler {
 		}
 		Teams.put("Blue", blueList);
 		Teams.put("Red", redList);
+		player.sendMessage(green + "You have left the team.");
+		addToLobby(player);
 	}
 	
 	public boolean teamIsEmpty(String team) {

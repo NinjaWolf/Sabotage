@@ -37,8 +37,8 @@ public class BlockListener implements Listener {
                 return;
             } else
             	if (line[1].equalsIgnoreCase("Leave") && line[2].isEmpty() && line[3].isEmpty()
-                        ||  line[2].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[3].isEmpty()
-                        ||  line[3].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[2].isEmpty()) {
+                ||  line[2].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[3].isEmpty()
+                ||  line[3].equalsIgnoreCase("Leave") && line[1].isEmpty() && line[2].isEmpty()) {
             		
             	SignHandler.getInstance().createLeaveGameSign(player, event);
             	return;
