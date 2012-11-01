@@ -17,23 +17,25 @@ import com.github.NinjaWolf.Sabotage.Generator.Arena_Generator;
 import com.github.NinjaWolf.Sabotage.Handlers.CommandHandler;
 import com.github.NinjaWolf.Sabotage.Listeners.BlockListener;
 import com.github.NinjaWolf.Sabotage.Listeners.PlayerListener;
+import com.github.NinjaWolf.Sabotage.Listeners.TagAPI_Listener;
+
 
 public class Sabotage extends JavaPlugin {
     
     private static final CommandHandler commandHandler = new CommandHandler();
-    private final PlayerListener         playerListener = new PlayerListener(this);
-    private final BlockListener          blockListener  = new BlockListener(this);
-    public final Configuration           config         = new Configuration(this);
-    public final File                    config_file    = new File(getDataFolder(), "config.yml");
+    private final PlayerListener        playerListener = new PlayerListener(this);
+    private final BlockListener         blockListener  = new BlockListener(this);
+    private final TagAPI_Listener       tagapiListener = new TagAPI_Listener(this);
+    public final Configuration          config         = new Configuration(this);
+    public final File                   config_file    = new File(getDataFolder(), "config.yml");
     
-    
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-      return commandHandler.dispatch(sender, label, args);
+        return commandHandler.dispatch(sender, label, args);
     }
     
     @Override
     public void onEnable() {
-        PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
         
         if (!config_file.exists()) {
@@ -41,11 +43,9 @@ public class Sabotage extends JavaPlugin {
             saveConfig();
         }
         
-        pm.registerEvents(playerListener, this);
-        pm.registerEvents(blockListener, this);
-        
+        registerListeners();
         registerCommands();
-        		
+        
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -56,16 +56,29 @@ public class Sabotage extends JavaPlugin {
         getLogger().log(Level.INFO, "Version: " + pdfFile.getVersion() + " is now Enabled.");
     }
     
-    @Override
-    public void onDisable() {
-        
-        getLogger().log(Level.INFO, "Disabled.");
-        
-    }
-    
     private void registerCommands() {
         commandHandler.addCommand(new Join());
         commandHandler.addCommand(new Leave());
+    }
+    
+    private void registerListeners() {
+        PluginManager pm = getServer().getPluginManager();
+        
+        pm.registerEvents(playerListener, this);
+        pm.registerEvents(blockListener, this);
+        
+        if (pm.getPlugin("TagAPI") != null) {
+            pm.registerEvents(tagapiListener, this);
+            getLogger().log(Level.INFO, "TagAPI Loaded Successfully.");
+        } else {
+            /* 
+             * TODO: Make a Method to use if TagAPI isn't found, so
+             *      Colored Nametags will still work. Just send a 
+             *      Entity-Destroy Packet then a Entity-Create
+             *      Packet with the Players name(colored).
+             */
+            getLogger().log(Level.INFO, "TagAPI couldn't be found, Colored Nametags disabled");
+        }
     }
     
     @Override
