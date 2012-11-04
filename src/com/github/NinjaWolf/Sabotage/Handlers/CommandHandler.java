@@ -78,14 +78,12 @@ public class CommandHandler {
     public Commands getCmdFromIdent(String ident, CommandSender executor)
     {
         ident = ident.toLowerCase();
-        if (identifiers.containsKey(ident)) {
+        if (identifiers.containsKey(ident))
             return identifiers.get(ident);
-        }
         
         for (Commands cmd : commands.values()) {
-            if (cmd.isIdentifier(executor, ident)) {
+            if (cmd.isIdentifier(executor, ident))
                 return cmd;
-            }
         }
         
         return null;

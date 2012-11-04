@@ -27,21 +27,21 @@ public class Teams {
     }
     
     public boolean inLobby(String playerName) {
-        if (TeamsHandler.getInstance().lobbyList.contains(playerName)) {
+        if (TeamsHandler.getInstance().Teams.get(playerName).contains("Lobby")) {
             return true;
         }
         return false;
     }
     
     public boolean inBlueTeam(String playerName) {
-        if (TeamsHandler.getInstance().blueList.contains(playerName)) {
+        if (TeamsHandler.getInstance().Teams.get(playerName).contains("Blue")) {
             return true;
         }
         return false;
     }
     
     public boolean inRedTeam(String playerName) {
-        if (TeamsHandler.getInstance().redList.contains(playerName)) {
+        if (TeamsHandler.getInstance().Teams.get(playerName).contains("Red")) {
             return true;
         }
         return false;

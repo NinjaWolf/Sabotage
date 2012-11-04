@@ -4,11 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
-
-import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 
 public class TagAPI_Listener implements Listener {

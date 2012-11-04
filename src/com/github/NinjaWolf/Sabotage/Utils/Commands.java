@@ -78,9 +78,8 @@ public abstract class Commands
     public boolean isIdentifier(CommandSender executor, String input)
     {
         for (String identifier : identifiers) {
-            if (input.equalsIgnoreCase(identifier)) {
+            if (input.equalsIgnoreCase(identifier))
                 return true;
-            }
         }
         return false;
     }

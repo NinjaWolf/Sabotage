@@ -30,11 +30,6 @@ public class Sabotage extends JavaPlugin {
     public final File                   config_file    = new File(getDataFolder(), "config.yml");
     
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return commandHandler.dispatch(sender, label, args);
-    }
-    
-    @Override
     public void onEnable() {
         PluginDescriptionFile pdfFile = getDescription();
         
@@ -49,16 +44,12 @@ public class Sabotage extends JavaPlugin {
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
+            getLogger().log(Level.INFO, "Metrics Loaded.");
         } catch (IOException e) {
-            getLogger().log(Level.INFO, "Metrics Couldn't Be Loaded For Sabotage.");
+            getLogger().log(Level.INFO, "Metrics Couldn't Be Loaded.");
         }
         
         getLogger().log(Level.INFO, "Version: " + pdfFile.getVersion() + " is now Enabled.");
-    }
-    
-    private void registerCommands() {
-        commandHandler.addCommand(new Join());
-        commandHandler.addCommand(new Leave());
     }
     
     private void registerListeners() {
@@ -67,18 +58,35 @@ public class Sabotage extends JavaPlugin {
         pm.registerEvents(playerListener, this);
         pm.registerEvents(blockListener, this);
         
-        if (pm.getPlugin("TagAPI") != null) {
+        if (isEnabled("TagAPI")) {
             pm.registerEvents(tagapiListener, this);
             getLogger().log(Level.INFO, "TagAPI Loaded Successfully.");
         } else {
             /* 
-             * TODO: Make a Method to use if TagAPI isn't found, so
-             *      Colored Nametags will still work. Just send a 
-             *      Entity-Destroy Packet then a Entity-Create
-             *      Packet with the Players name(colored).
+             * TODO: Make a Method to use if TagAPI isn't found
+             *      This way Colored Nametags will still work.
+             *      Just send a Entity-Destroy Packet then a 
+             *      Entity-Create Packet with the Players name
+             *      in color.
              */
             getLogger().log(Level.INFO, "TagAPI couldn't be found, Colored Nametags disabled");
         }
+    }
+    
+    private void registerCommands() {
+        commandHandler.addCommand(new Join());
+        commandHandler.addCommand(new Leave());
+    }
+    
+    public boolean isEnabled(String plugin) {
+        if (getServer().getPluginManager().getPlugin(plugin) != null)
+            return true;
+        return false;
+    }
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return commandHandler.dispatch(sender, label, args);
     }
     
     @Override

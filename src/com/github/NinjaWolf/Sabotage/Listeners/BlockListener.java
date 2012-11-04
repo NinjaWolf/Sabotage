@@ -26,9 +26,8 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         String[] line = event.getLines();
         
-        if (!event.getLine(0).equalsIgnoreCase("[Sabotage]")) {
+        if (!event.getLine(0).equalsIgnoreCase("[Sabotage]"))
             return;
-        }
         
         if (Permissions.hasPermission(player, Permissions.ADMINISTRATION)) {
             if (line[1].equalsIgnoreCase("Join") && line[2].isEmpty() && line[3].isEmpty()
@@ -52,9 +51,8 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         
-        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION)) {
+        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
-        }
         
         if (TeamsHandler.getInstance().isInGame(player)) {
             if (!(block.getType() == Material.LADDER)) {
@@ -69,9 +67,8 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         
-        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION)) {
+        if (Permissions.hasPermission(player, Permissions.ADMINISTRATION))
             return;
-        }
         
         if (TeamsHandler.getInstance().isInGame(player)) {
             if (!(block.getType() == Material.LADDER)) {
