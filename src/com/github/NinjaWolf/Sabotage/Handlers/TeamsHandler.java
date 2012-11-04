@@ -39,10 +39,12 @@ public class TeamsHandler {
     public void addToTeam(String team, Player player) {
         if (team == "Blue") {
             Teams.put(player.getName(), "Blue");
+            player.setDisplayName(blue + player.getName() + reset);
             TagAPI.refreshPlayer(player);
             player.sendMessage(blue + "Welcome to the " + bold + "BLUE" + reset + blue + " team!");
         } else if (team == "Red") {
             Teams.put(player.getName(), "Red");
+            player.setDisplayName(red + player.getName() + reset);
             TagAPI.refreshPlayer(player);
             player.sendMessage(red + "Welcome to the " + bold + "RED" + reset + red + " team!");
         }
@@ -52,6 +54,7 @@ public class TeamsHandler {
         Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
         Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
         Teams.put(player.getName(), "Lobby");
+        player.setDisplayName(green + player.getName() + reset);
         player.teleport(Lobby);
         player.sendMessage(green + "Welcome Back to the " + bold + "Lobby");
         TagAPI.refreshPlayer(player);
