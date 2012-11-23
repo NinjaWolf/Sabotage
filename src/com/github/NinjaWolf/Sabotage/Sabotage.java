@@ -1,5 +1,6 @@
 package com.github.NinjaWolf.Sabotage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -25,25 +26,24 @@ public class Sabotage extends JavaPlugin {
     private final PlayerListener        playerListener = new PlayerListener();
     private final BlockListener         blockListener  = new BlockListener();
     private final TagAPI_Listener       tagapiListener = new TagAPI_Listener(this);
-    //public  final Configuration          config         = new Configuration(this);
+    public final Configuration          config         = new Configuration(this);
     private static final CommandHandler commandHandler = new CommandHandler();
     
-    public static boolean Enabled;
+    public final File                   mainConfig     = new File(getDataFolder(), "config.yml");
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return commandHandler.dispatch(sender, label, args);
     }
-
+    
     @Override
     public void onEnable() {
         PluginDescriptionFile pdfFile = getDescription();
         
-       /* if (!config.mainConfig.exists()) {
+        if (!mainConfig.exists()) {
             getConfig().options().copyDefaults(true);
             config.save();
         }
-        */
         registerListeners();
         registerCommands();
         
@@ -85,15 +85,14 @@ public class Sabotage extends JavaPlugin {
     }
     
     public boolean isActive(String plugin) {
-        if (getServer().getPluginManager().getPlugin(plugin) != null) {
+        if (getServer().getPluginManager().getPlugin(plugin) != null)
             return true;
-        }
         return false;
     }
     
     public static CommandHandler getCommandHandler() {
         return commandHandler;
-      }
+    }
     
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
