@@ -2,11 +2,12 @@ package com.github.NinjaWolf.Sabotage.Listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,14 +19,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.github.NinjaWolf.Sabotage.Permissions;
-import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
+import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class PlayerListener implements Listener {
-    Sabotage Main;
     
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -33,11 +32,8 @@ public class PlayerListener implements Listener {
         String displayName = player.getDisplayName();
         ChatColor green = ChatColor.GREEN;
         
-        Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
-        Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
-        
         TeamsHandler.getInstance().addToLobby(player);
-        player.teleport(Lobby);
+
         player.sendMessage(green + "Welcome " + displayName + ",");
         player.sendMessage(green + "You are in the Lobby. Play Nice, and Have Fun!");
         
@@ -52,28 +48,34 @@ public class PlayerListener implements Listener {
         if (block == null)
             return;
         
-        if (block.getTypeId() == 63 || block.getTypeId() == 68) {
-            
-            sign = (Sign) block.getState();
+        if (block.getType().equals(Material.SIGN) 
+         || block.getType().equals(Material.SIGN_POST) 
+         || block.getType().equals(Material.WALL_SIGN)) {
             
             if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
                 return;
             
-            if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "   [Sabotage]   "))
-                return;
+                sign = (Sign) block.getState();
             
-            if (Permissions.hasPermission(player, Permissions.JOIN)) {
-                if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "  [Join Game]  ")) {
-                    TeamsHandler.getInstance().joinGame(player);
+                if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + "  [Sabotage]  "))
+                    return;
+                
+                
+                if (Permissions.hasPermission(player, Permissions.JOIN)) {
+                    if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + " [Join Game]")) {
+                        TeamsHandler.getInstance().joinGame(player);
+                        event.setUseInteractedBlock(Result.DENY);
+                    }
                 }
-            } else if (Permissions.hasPermission(player, Permissions.LEAVE)) {
-                Main.getConfig().addDefault("Sabotage.Signs.Active.leave", true);
-                if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + " [Leave Game]")) {
-                    TeamsHandler.getInstance().leaveGame(player);
+
+                if (Permissions.hasPermission(player, Permissions.LEAVE)) {
+                    if (sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + " [Leave Game]")) {
+                        TeamsHandler.getInstance().leaveGame(player);
+                        event.setUseInteractedBlock(Result.DENY);
+                    }
                 }
             }
         }
-    }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
@@ -89,8 +91,7 @@ public class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
-        event.setRespawnLocation(Lobby);
+        event.setRespawnLocation(Bukkit.getServer().getWorld("world").getSpawnLocation());
     }
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -125,9 +126,9 @@ public class PlayerListener implements Listener {
             }
             
             if ((Teams.getInstance().inRedTeam(attacker.getName()) && Teams.getInstance().inRedTeam(player.getName()))
-                    || (Teams.getInstance().inBlueTeam(attacker.getName()) && Teams.getInstance().inBlueTeam(player.getName()))) {
-                event.setCancelled(true);
-                attacker.sendMessage(green + "PvP is Disabled Between Teammates!");
+             || (Teams.getInstance().inBlueTeam(attacker.getName()) && Teams.getInstance().inBlueTeam(player.getName()))) {
+                    event.setCancelled(true);
+                    attacker.sendMessage(green + "PvP is Disabled Between Teammates!");
             }
         }
         else if (event.getDamager() instanceof Arrow) {
@@ -155,9 +156,5 @@ public class PlayerListener implements Listener {
                 }
             }
         }
-    }
-    
-    public PlayerListener(Sabotage instance) {
-        Main = instance;
     }
 }

@@ -14,7 +14,7 @@ import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class TeamsHandler {
     
-    public HashMap<String, String> Teams    = new HashMap<String, String>();
+    public  final HashMap<String, String> Teams    = new HashMap<String, String>();
     public Teams                   Red;
     public Teams                   Blue;
     static Sabotage                st;
@@ -34,39 +34,6 @@ public class TeamsHandler {
         st = Main;
         Red = new Teams("Red", ChatColor.RED);
         Blue = new Teams("Blue", ChatColor.BLUE);
-    }
-    
-    public void addToTeam(String team, Player player) {
-        if (team == "Blue") {
-            Teams.put(player.getName(), "Blue");
-            player.setDisplayName(blue + player.getName() + reset);
-            TagAPI.refreshPlayer(player);
-            player.sendMessage(blue + "Welcome to the " + bold + "BLUE" + reset + blue + " team!");
-        } else if (team == "Red") {
-            Teams.put(player.getName(), "Red");
-            player.setDisplayName(red + player.getName() + reset);
-            TagAPI.refreshPlayer(player);
-            player.sendMessage(red + "Welcome to the " + bold + "RED" + reset + red + " team!");
-        }
-    }
-    
-    public void addToLobby(Player player) {
-        Bukkit.getServer().getWorld("world").setSpawnLocation(10, 66, 10);
-        Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
-        Teams.put(player.getName(), "Lobby");
-        player.setDisplayName(green + player.getName() + reset);
-        player.teleport(Lobby);
-        player.sendMessage(green + "Welcome Back to the " + bold + "Lobby");
-        TagAPI.refreshPlayer(player);
-    }
-    
-    public void removeFromTeam(Player player) {
-        if (!Teams.get(player.getName()).isEmpty()) {
-            Teams.put(player.getName(), null);
-        }
-        
-        player.sendMessage(green + "You have left the team.");
-        addToLobby(player);
     }
     
     public void joinGame(Player player) {
@@ -92,6 +59,47 @@ public class TeamsHandler {
         addToTeam(team, player);
     }
     
+    public void addToTeam(String team, Player player) {
+        String redName = red + player.getName() + reset;
+        String blueName = blue + player.getName() + reset;
+        if (team == "Blue") {
+            Teams.put(player.getName(), "Blue");
+            player.setDisplayName(blueName);
+            player.setPlayerListName(blueName);
+            TagAPI.refreshPlayer(player);
+            player.sendMessage(blue + "Welcome to the " + bold + "BLUE" + reset + blue + " team!");
+        } else if (team == "Red") {
+            Teams.put(player.getName(), "Red");
+            player.setDisplayName(redName);
+            player.setPlayerListName(redName);
+            TagAPI.refreshPlayer(player);
+            player.sendMessage(red + "Welcome to the " + bold + "RED" + reset + red + " team!");
+        }
+    }
+    
+    public void addToLobby(Player player) {
+        Bukkit.getServer().getWorld("world").setSpawnLocation(10, 64, 10);
+        Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
+        
+        Teams.put(player.getName(), "Lobby");
+        player.setDisplayName(green + player.getName() + reset);
+        player.setPlayerListName(green + player.getName());
+        player.teleport(Lobby);
+        TagAPI.refreshPlayer(player);
+    }
+    
+    public void removeFromTeam(Player player) {
+        if (Teams.get(player.getName()).equals("Lobby")) {
+            Teams.remove(player.getName());
+            return;
+        }
+        if (Teams.containsKey(player.getName()))
+            Teams.remove(player.getName());
+            
+            addToLobby(player);
+            player.sendMessage(green + "You have left the team. Welcome Back to the " + bold + "Lobby.");
+    }
+    
     public void leaveGame(Player player) {
         if (!isInGame(player)) {
             player.sendMessage(green + "You aren't currently in a Team.");
@@ -102,7 +110,7 @@ public class TeamsHandler {
     }
     
     public boolean isInGame(Player player) {
-        if ((Teams.get(player.getName()) == "Red") || (Teams.get(player.getName()) == "Blue")) {
+        if (Teams.get(player.getName()).equals("Red") || Teams.get(player.getName()).equals("Blue")) {
             return true;
         }
         return false;

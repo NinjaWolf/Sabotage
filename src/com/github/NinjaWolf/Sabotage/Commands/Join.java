@@ -3,9 +3,9 @@ package com.github.NinjaWolf.Sabotage.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.NinjaWolf.Sabotage.Permissions;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 import com.github.NinjaWolf.Sabotage.Utils.Commands;
+import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class Join extends Commands {
@@ -28,10 +28,5 @@ public class Join extends Commands {
             TeamsHandler.getInstance().joinGame((Player) sender);
         }
         
-    }
-    
-    @Override
-    public String help(Player player) {
-        return "/join - Join the Game";
     }
 }

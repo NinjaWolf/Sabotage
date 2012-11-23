@@ -1,11 +1,10 @@
 package com.github.NinjaWolf.Sabotage.Commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 
-public abstract interface StCommand
-{
+public abstract interface StCommand {
+    
     public abstract void cancelInteraction(CommandSender paramCommandSender);
     
     public abstract boolean execute(CommandSender paramCommandSender, String paramString, String[] paramArrayOfString);
@@ -33,6 +32,4 @@ public abstract interface StCommand
     public abstract boolean isInteractive();
     
     public abstract boolean isShownOnHelpMenu();
-    
-    public abstract String help(Player paramPlayer);
 }

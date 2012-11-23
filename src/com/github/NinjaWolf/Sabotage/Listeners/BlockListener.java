@@ -10,16 +10,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import com.github.NinjaWolf.Sabotage.Permissions;
-import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Handlers.SignHandler;
-import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
+import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class BlockListener implements Listener {
-    Sabotage Main;
-    Teams    Tm;
+
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignChange(SignChangeEvent event) {
@@ -55,11 +52,11 @@ public class BlockListener implements Listener {
             return;
         
         if (TeamsHandler.getInstance().isInGame(player)) {
-            if (!(block.getType() == Material.LADDER)) {
+            if (!block.getType().equals(Material.LADDER)) {
                 event.setCancelled(true);
             }
-        }
-        event.setCancelled(true);
+        } else
+            event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -71,19 +68,10 @@ public class BlockListener implements Listener {
             return;
         
         if (TeamsHandler.getInstance().isInGame(player)) {
-            if (!(block.getType() == Material.LADDER)) {
+            if (!block.getType().equals(Material.LADDER)) {
                 event.setCancelled(true);
             }
-        }
-        event.setCancelled(true);
+        } else
+            event.setCancelled(true);
     }
-    
-    public BlockListener(Sabotage instance) {
-        Main = instance;
-    }
-    
-    public BlockListener(Teams instance) {
-        Tm = instance;
-    }
-    
 }

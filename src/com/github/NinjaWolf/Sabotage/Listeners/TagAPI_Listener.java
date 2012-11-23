@@ -11,7 +11,7 @@ import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 
 
 public class TagAPI_Listener implements Listener {
-    Sabotage Main;
+    Sabotage Plugin;
     
     @EventHandler
     public void onNameTag(PlayerReceiveNameTagEvent event) {
@@ -19,11 +19,11 @@ public class TagAPI_Listener implements Listener {
         
         if (Teams.getInstance().inLobby(player.getName())) {
             event.setTag(ChatColor.GREEN + player.getName());
-        }
+        } else
         
         if (Teams.getInstance().inBlueTeam(player.getName())) {
             event.setTag(ChatColor.BLUE + player.getName());
-        }
+        } else
         
         if (Teams.getInstance().inRedTeam(player.getName())) {
             event.setTag(ChatColor.RED + player.getName());
@@ -31,6 +31,6 @@ public class TagAPI_Listener implements Listener {
     }
     
     public TagAPI_Listener(Sabotage instance) {
-        Main = instance;
+        Plugin = instance;
     }
 }

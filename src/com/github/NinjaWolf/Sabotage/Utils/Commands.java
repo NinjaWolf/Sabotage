@@ -22,61 +22,51 @@ public abstract class Commands
     }
     
     @Override
-    public void cancelInteraction(CommandSender executor)
-    {
+    public void cancelInteraction(CommandSender executor) {
     }
     
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
     
     @Override
-    public String[] getIdentifiers()
-    {
+    public String[] getIdentifiers() {
         return identifiers;
     }
     
     @Override
-    public int getMaxArguments()
-    {
+    public int getMaxArguments() {
         return maxArguments;
     }
     
     @Override
-    public int getMinArguments()
-    {
+    public int getMinArguments() {
         return minArguments;
     }
     
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
     @Override
-    public String[] getNotes()
-    {
+    public String[] getNotes() {
         return notes;
     }
     
     @Override
-    public String getPermission()
-    {
+    public String getPermission() {
         return permission;
     }
     
     @Override
-    public String getUsage()
-    {
+    public String getUsage() {
         return usage;
     }
     
     @Override
-    public boolean isIdentifier(CommandSender executor, String input)
-    {
+    public boolean isIdentifier(CommandSender executor, String input) {
         for (String identifier : identifiers) {
             if (input.equalsIgnoreCase(identifier))
                 return true;
@@ -85,20 +75,17 @@ public abstract class Commands
     }
     
     @Override
-    public boolean isInProgress(CommandSender executor)
-    {
+    public boolean isInProgress(CommandSender executor) {
         return false;
     }
     
     @Override
-    public boolean isInteractive()
-    {
+    public boolean isInteractive() {
         return false;
     }
     
     @Override
-    public boolean isShownOnHelpMenu()
-    {
+    public boolean isShownOnHelpMenu() {
         return true;
     }
     

@@ -7,9 +7,14 @@ author: NinjaWolf
 website: https://github.com/NinjaWolf/Sabotage
 commands:
     join:
+        aliases: ['st join', 'sabotage join']
         description: Joins the Game.
     leave:
+        aliases: ['st leave', 'sabotage leave']
         description: Leaves the Game.
+    sabotage:
+        aliases: ['st', 'help']
+        description: Displays Commands for Sabotage.
 permissions:
     st.admin:
         description: Gives Admin control over plugin.
@@ -19,4 +24,7 @@ permissions:
         default: op
     st.leave:
         description: Allows Player to Leave the game.
+        default: op
+    st.help:
+        description: Allows Player to Display Commands.
         default: op

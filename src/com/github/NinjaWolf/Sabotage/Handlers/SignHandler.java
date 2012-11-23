@@ -21,7 +21,7 @@ public class SignHandler {
     
     public void createJoinGameSign(Player player, SignChangeEvent event) {
         gameSign(event);
-        event.setLine(2, green + "  [Join Game]  ");
+        event.setLine(2, green + " [Join Game]");
         updateSign(event);
         
         // TODO: Make a Chat Handler to get rid of this mess
@@ -38,7 +38,7 @@ public class SignHandler {
     }
     
     public void gameSign(SignChangeEvent event) {
-        event.setLine(0, green + "   [Sabotage]   ");
+        event.setLine(0, green + "  [Sabotage]  ");
         event.setLine(1, null);
         event.setLine(2, null);
         event.setLine(3, null);

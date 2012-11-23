@@ -3,9 +3,9 @@ package com.github.NinjaWolf.Sabotage.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.NinjaWolf.Sabotage.Permissions;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 import com.github.NinjaWolf.Sabotage.Utils.Commands;
+import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class Leave extends Commands {
@@ -29,10 +29,4 @@ public class Leave extends Commands {
         }
         
     }
-    
-    @Override
-    public String help(Player player) {
-        return "/leave - Leave the game";
-    }
-    
 }

@@ -1,6 +1,5 @@
 package com.github.NinjaWolf.Sabotage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -11,6 +10,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.NinjaWolf.Sabotage.Commands.Help;
 import com.github.NinjaWolf.Sabotage.Commands.Join;
 import com.github.NinjaWolf.Sabotage.Commands.Leave;
 import com.github.NinjaWolf.Sabotage.Generator.Arena_Generator;
@@ -22,22 +22,28 @@ import com.github.NinjaWolf.Sabotage.Listeners.TagAPI_Listener;
 
 public class Sabotage extends JavaPlugin {
     
-    private static final CommandHandler commandHandler = new CommandHandler();
-    private final PlayerListener        playerListener = new PlayerListener(this);
-    private final BlockListener         blockListener  = new BlockListener(this);
+    private final PlayerListener        playerListener = new PlayerListener();
+    private final BlockListener         blockListener  = new BlockListener();
     private final TagAPI_Listener       tagapiListener = new TagAPI_Listener(this);
-    public final Configuration          config         = new Configuration(this);
-    public final File                   config_file    = new File(getDataFolder(), "config.yml");
+    //public  final Configuration          config         = new Configuration(this);
+    private static final CommandHandler commandHandler = new CommandHandler();
     
+    public static boolean Enabled;
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return commandHandler.dispatch(sender, label, args);
+    }
+
     @Override
     public void onEnable() {
         PluginDescriptionFile pdfFile = getDescription();
         
-        if (!config_file.exists()) {
+       /* if (!config.mainConfig.exists()) {
             getConfig().options().copyDefaults(true);
-            saveConfig();
+            config.save();
         }
-        
+        */
         registerListeners();
         registerCommands();
         
@@ -48,7 +54,6 @@ public class Sabotage extends JavaPlugin {
         } catch (IOException e) {
             getLogger().log(Level.INFO, "Metrics Couldn't Be Loaded.");
         }
-        
         getLogger().log(Level.INFO, "Version: " + pdfFile.getVersion() + " is now Enabled.");
     }
     
@@ -58,7 +63,7 @@ public class Sabotage extends JavaPlugin {
         pm.registerEvents(playerListener, this);
         pm.registerEvents(blockListener, this);
         
-        if (isEnabled("TagAPI")) {
+        if (isActive("TagAPI")) {
             pm.registerEvents(tagapiListener, this);
             getLogger().log(Level.INFO, "TagAPI Loaded Successfully.");
         } else {
@@ -76,18 +81,19 @@ public class Sabotage extends JavaPlugin {
     private void registerCommands() {
         commandHandler.addCommand(new Join());
         commandHandler.addCommand(new Leave());
+        commandHandler.addCommand(new Help());
     }
     
-    public boolean isEnabled(String plugin) {
-        if (getServer().getPluginManager().getPlugin(plugin) != null)
+    public boolean isActive(String plugin) {
+        if (getServer().getPluginManager().getPlugin(plugin) != null) {
             return true;
+        }
         return false;
     }
     
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return commandHandler.dispatch(sender, label, args);
-    }
+    public static CommandHandler getCommandHandler() {
+        return commandHandler;
+      }
     
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {

@@ -1,12 +1,11 @@
 package com.github.NinjaWolf.Sabotage;
 
+import java.io.File;
+
 public class Configuration {
     
-    private final Sabotage plugin;
-    
-    public Configuration(Sabotage instance) {
-        plugin = instance;
-    }
+    public Sabotage plugin;
+    public final File                   mainConfig    = new File(plugin.getDataFolder(), "config.yml");
     
     public void save() {
         plugin.saveConfig();
@@ -15,5 +14,9 @@ public class Configuration {
     public void load()
     {
         plugin.reloadConfig();
+    }
+    
+    public Configuration(Sabotage instance) {
+        plugin = instance;
     }
 }

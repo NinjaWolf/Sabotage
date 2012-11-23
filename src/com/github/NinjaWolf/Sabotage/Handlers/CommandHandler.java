@@ -7,21 +7,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.NinjaWolf.Sabotage.Permissions;
 import com.github.NinjaWolf.Sabotage.Commands.StCommand;
-import com.github.NinjaWolf.Sabotage.Utils.Commands;
+import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class CommandHandler {
-    private final Map<String, Commands> commands    = new LinkedHashMap<String, Commands>();
-    private final Map<String, Commands> identifiers = new HashMap<String, Commands>();
+    private final Map<String, StCommand> commands    = new LinkedHashMap<String, StCommand>();
+    private final Map<String, StCommand> identifiers = new HashMap<String, StCommand>();
     
-    public void addCommand(Commands command) {
+    public void addCommand(StCommand command) {
         commands.put(command.getName().toLowerCase(), command);
         for (String ident : command.getIdentifiers()) {
             identifiers.put(ident.toLowerCase(), command);
@@ -36,7 +33,7 @@ public class CommandHandler {
                 identifier.append(" ").append(args[i]);
             }
             
-            Commands cmd = getCmdFromIdent(identifier.toString(), sender);
+            StCommand cmd = getCmdFromIdent(identifier.toString(), sender);
             if (cmd != null)
             {
                 String[] realArgs = Arrays.copyOfRange(args, argsIncluded, args.length);
@@ -64,7 +61,7 @@ public class CommandHandler {
         return true;
     }
     
-    private void displayCommandHelp(Commands cmd, CommandSender sender) {
+    private void displayCommandHelp(StCommand cmd, CommandSender sender) {
         sender.sendMessage(new StringBuilder().append("§cCommand:§e ").append(cmd.getName()).toString());
         sender.sendMessage(new StringBuilder().append("§cDescription:§e ").append(cmd.getDescription()).toString());
         sender.sendMessage(new StringBuilder().append("§cUsage:§e ").append(cmd.getUsage()).toString());
@@ -75,13 +72,13 @@ public class CommandHandler {
         }
     }
     
-    public Commands getCmdFromIdent(String ident, CommandSender executor)
+    public StCommand getCmdFromIdent(String ident, CommandSender executor)
     {
         ident = ident.toLowerCase();
         if (identifiers.containsKey(ident))
-            return identifiers.get(ident);
+            return (StCommand)identifiers.get(ident);
         
-        for (Commands cmd : commands.values()) {
+        for (StCommand cmd : commands.values()) {
             if (cmd.isIdentifier(executor, ident))
                 return cmd;
         }
@@ -89,43 +86,18 @@ public class CommandHandler {
         return null;
     }
     
-    public Commands getCommand(String name) {
+    public StCommand getCommand(String name) {
         return commands.get(name.toLowerCase());
     }
     
-    public List<Commands> getCommands() {
-        return new ArrayList<Commands>(commands.values());
+    public List<StCommand> getCommands() {
+        return new ArrayList<StCommand>(commands.values());
     }
     
-    public void removeCommand(Commands command) {
+    public void removeCommand(StCommand command) {
         commands.remove(command.getName().toLowerCase());
         for (String ident : command.getIdentifiers()) {
             identifiers.remove(ident.toLowerCase());
-        }
-    }
-    
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        
-        Player player = null;
-        if ((sender instanceof Player)) {
-            player = (Player) sender;
-        }
-        else {
-            System.out.println("Only ingame players can use Sabotage commands");
-            return true;
-        }
-        
-        if (commandLabel.equalsIgnoreCase("help")) {
-            help(player);
-            return true;
-        }
-        return false;
-    }
-    
-    public void help(Player p) {
-        p.sendMessage("/<command> <args>");
-        for (StCommand v : commands.values()) {
-            p.sendMessage(ChatColor.AQUA + v.help(p));
         }
     }
 }
