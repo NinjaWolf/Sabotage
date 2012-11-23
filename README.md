@@ -1,10 +1,4 @@
-
- ____        _           _                   
-/ ___|  __ _| |__   ___ | |_ __ _  __ _  ___ 
-\___ \ / _` | '_ \ / _ \| __/ _` |/ _` |/ _ \
- ___) | (_| | |_) | (_) | || (_| | (_| |  __/
-|____/ \__,_|_.__/ \___/ \__\__,_|\__, |\___|
-                                  |___/           
+![Sabotage](http://i.imgur.com/nNZ39.jpg "superFun")
                                  
 ## Overview
 Sabotage is a Bukkit Plugin Designed to create a Fun and energetic Experience. This plugin is 
