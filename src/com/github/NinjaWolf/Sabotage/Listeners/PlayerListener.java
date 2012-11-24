@@ -1,10 +1,14 @@
 package com.github.NinjaWolf.Sabotage.Listeners;
 
+import net.minecraft.server.Packet62NamedSoundEffect;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -26,7 +30,7 @@ import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 public class PlayerListener implements Listener {
     
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
@@ -81,26 +85,24 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
-        
-        if (TeamsHandler.getInstance().isInGame(player)) {
-            Bukkit.broadcastMessage(displayName + ChatColor.YELLOW + " has Left the Game.");
-        }
+
+        Bukkit.broadcastMessage(displayName + ChatColor.YELLOW + " has Left the Game.");
         TeamsHandler.getInstance().removeFromTeam(player);
         
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         event.setRespawnLocation(Bukkit.getServer().getWorld("world").getSpawnLocation());
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
         
         TeamsHandler.getInstance().removeFromTeam(player);
-        event.setLeaveMessage(displayName + " was Kicked from the game.");
+        event.setLeaveMessage(displayName + ChatColor.YELLOW + " was Kicked. (");
         
     }
     
@@ -136,11 +138,12 @@ public class PlayerListener implements Listener {
             if (arrow.getShooter() instanceof Player) {
                 Player player = (Player) event.getEntity();
                 Player shooter = (Player) arrow.getShooter();
+                Location sLoc = shooter.getLocation();
                 ChatColor green = ChatColor.GREEN;
                 
                 if (Teams.getInstance().inLobby(player.getName())) {
                     event.setCancelled(true);
-                    shooter.sendMessage(green + "You Cannot attack a player in the Lobby!");
+                    shooter.sendMessage(green + "You Cannot shoot a player in the Lobby!");
                     return;
                 }
                 else if (Teams.getInstance().inLobby(shooter.getName())) {
@@ -150,9 +153,15 @@ public class PlayerListener implements Listener {
                 }
                 
                 if ((Teams.getInstance().inRedTeam(shooter.getName()) && Teams.getInstance().inRedTeam(player.getName()))
-                        || (Teams.getInstance().inBlueTeam(shooter.getName()) && Teams.getInstance().inBlueTeam(player.getName()))) {
+                || (Teams.getInstance().inBlueTeam(shooter.getName()) && Teams.getInstance().inBlueTeam(player.getName()))) {
                     event.setCancelled(true);
                     shooter.sendMessage(green + "PvP is Disabled Between Teammates!");
+                    return;
+                }
+                
+                if (TeamsHandler.getInstance().isInGame(shooter)) {
+                    Packet62NamedSoundEffect packet = new Packet62NamedSoundEffect("random.orb", sLoc.getX(), sLoc.getY(), sLoc.getZ(), 1.0F, 0.0F);
+                    ((CraftPlayer)shooter).getHandle().netServerHandler.sendPacket(packet);
                 }
             }
         }

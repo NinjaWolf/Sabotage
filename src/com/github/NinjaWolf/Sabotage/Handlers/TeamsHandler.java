@@ -67,13 +67,13 @@ public class TeamsHandler {
             player.setDisplayName(blueName);
             player.setPlayerListName(blueName);
             TagAPI.refreshPlayer(player);
-            player.sendMessage(blue + "Welcome to the " + bold + "BLUE" + reset + blue + " team!");
+            player.sendMessage(blue + "You have joined the " + bold + "BLUE" + reset + blue + " team!");
         } else if (team == "Red") {
             Teams.put(player.getName(), "Red");
             player.setDisplayName(redName);
             player.setPlayerListName(redName);
             TagAPI.refreshPlayer(player);
-            player.sendMessage(red + "Welcome to the " + bold + "RED" + reset + red + " team!");
+            player.sendMessage(red + "You have joined the " + bold + "RED" + reset + red + " team!");
         }
     }
     
