@@ -22,11 +22,11 @@ public class TagAPI_Listener implements Listener {
         } else
         
         if (Teams.getInstance().inBlueTeam(player.getName())) {
-            event.setTag(ChatColor.BLUE + player.getName());
+            event.setTag(ChatColor.DARK_BLUE + player.getName());
         } else
         
         if (Teams.getInstance().inRedTeam(player.getName())) {
-            event.setTag(ChatColor.RED + player.getName());
+            event.setTag(ChatColor.DARK_RED + player.getName());
         }
     }
     

@@ -12,11 +12,12 @@ import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 public class Help extends Commands {
     public Help() {
-        super("Help");
+        super("Sabotage");
         setDescription("Displays Commands for Sabotage.");
-        setUsage("/st help");
+        setUsage("/sabotage");
         setArgumentRange(0, 1);
-        setIdentifiers(new String[] {"sabotage help", "st help"});
+        setPermission(Permissions.HELP);
+        setIdentifiers(new String[] {"sabotage", "st", "sabotage help", "st help", "help"});
     }
     
     @Override
@@ -51,7 +52,7 @@ public class Help extends Commands {
         if ((page >= numPages) || (page < 0)) {
           page = 0;
         }
-        sender.sendMessage("§c-----[ §fSabotage Help <" + (page + 1) + "/" + numPages + ">§c ]-----");
+        sender.sendMessage("§c-----[ §aSabotage Help §f<" + (page + 1) + "/" + numPages + ">§c ]-----");
         int start = page * 8;
         int end = start + 8;
         if (end > commands.size()) {
@@ -59,7 +60,7 @@ public class Help extends Commands {
         }
         for (int c = start; c < end; c++) {
           StCommand cmd = commands.get(c);
-          sender.sendMessage("  §a" + cmd.getUsage());
+          sender.sendMessage("  §a" + cmd.getUsage() + "§f - §a" + cmd.getDescription());
         }
         return true;
       }

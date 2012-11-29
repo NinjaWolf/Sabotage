@@ -34,7 +34,6 @@ public class Teams {
     }
     
     public boolean inBlueTeam(String playerName) {
-        TeamsHandler.getInstance();
         if (TeamsHandler.getInstance().Teams.get(playerName).equals("Blue")) {
             return true;
         }

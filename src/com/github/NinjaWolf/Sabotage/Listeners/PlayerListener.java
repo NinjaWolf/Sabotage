@@ -81,27 +81,27 @@ public class PlayerListener implements Listener {
             }
         }
     
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
 
         Bukkit.broadcastMessage(displayName + ChatColor.YELLOW + " has Left the Game.");
-        TeamsHandler.getInstance().removeFromTeam(player);
+        TeamsHandler.getInstance().removePlayer(player);
         
     }
     
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         event.setRespawnLocation(Bukkit.getServer().getWorld("world").getSpawnLocation());
     }
     
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
         String displayName = player.getDisplayName();
         
-        TeamsHandler.getInstance().removeFromTeam(player);
+        TeamsHandler.getInstance().removePlayer(player);
         event.setLeaveMessage(displayName + ChatColor.YELLOW + " was Kicked. (");
         
     }

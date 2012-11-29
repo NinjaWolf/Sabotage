@@ -14,6 +14,7 @@ public class Leave extends Commands {
         setDescription("Leaves the Game");
         setUsage("/leave");
         setArgumentRange(0, 1);
+        setPermission(Permissions.LEAVE);
         setIdentifiers(new String[] {"leave", "st leave", "sabotage leave"});
     }
     
@@ -24,9 +25,6 @@ public class Leave extends Commands {
     }
     
     private void handleLeaveCommand(CommandSender sender) {
-        if (Permissions.hasPermission((Player) sender, Permissions.LEAVE)) {
             TeamsHandler.getInstance().leaveGame((Player) sender);
-        }
-        
     }
 }

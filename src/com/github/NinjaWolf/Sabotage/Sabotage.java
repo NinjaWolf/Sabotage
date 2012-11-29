@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.NinjaWolf.Sabotage.Commands.Help;
 import com.github.NinjaWolf.Sabotage.Commands.Join;
 import com.github.NinjaWolf.Sabotage.Commands.Leave;
+import com.github.NinjaWolf.Sabotage.Commands.ListPlayers;
 import com.github.NinjaWolf.Sabotage.Generator.Arena_Generator;
 import com.github.NinjaWolf.Sabotage.Handlers.CommandHandler;
 import com.github.NinjaWolf.Sabotage.Listeners.BlockListener;
@@ -81,6 +82,7 @@ public class Sabotage extends JavaPlugin {
     private void registerCommands() {
         commandHandler.addCommand(new Join());
         commandHandler.addCommand(new Leave());
+        commandHandler.addCommand(new ListPlayers());
         commandHandler.addCommand(new Help());
     }
     

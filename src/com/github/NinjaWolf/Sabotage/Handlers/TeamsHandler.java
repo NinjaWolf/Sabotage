@@ -56,10 +56,10 @@ public class TeamsHandler {
             team = "Red";
         }
         
-        addToTeam(team, player);
+        addPlayer(team, player);
     }
     
-    public void addToTeam(String team, Player player) {
+    public void addPlayer(String team, Player player) {
         String redName = red + player.getName() + reset;
         String blueName = blue + player.getName() + reset;
         if (team == "Blue") {
@@ -88,7 +88,7 @@ public class TeamsHandler {
         TagAPI.refreshPlayer(player);
     }
     
-    public void removeFromTeam(Player player) {
+    public void removePlayer(Player player) {
         if (Teams.get(player.getName()).equals("Lobby")) {
             Teams.remove(player.getName());
             return;
@@ -106,7 +106,7 @@ public class TeamsHandler {
             return;
         }
         
-        removeFromTeam(player);
+        removePlayer(player);
     }
     
     public boolean isInGame(Player player) {

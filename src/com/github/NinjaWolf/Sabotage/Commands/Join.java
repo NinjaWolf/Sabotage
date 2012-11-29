@@ -14,6 +14,7 @@ public class Join extends Commands {
         setDescription("Joins the Game");
         setUsage("/join");
         setArgumentRange(0, 1);
+        setPermission(Permissions.JOIN);
         setIdentifiers(new String[] {"join", "st join", "sabotage join"});
     }
     
@@ -24,9 +25,6 @@ public class Join extends Commands {
     }
     
     private void handleJoinCommand(CommandSender sender) {
-        if (Permissions.hasPermission((Player) sender, Permissions.JOIN)) {
             TeamsHandler.getInstance().joinGame((Player) sender);
-        }
-        
     }
 }

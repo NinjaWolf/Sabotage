@@ -12,8 +12,11 @@ commands:
     leave:
         aliases: ['st leave', 'sabotage leave']
         description: Leaves the Game.
+    list:
+        aliases: ['st list', 'sabotage list']
+        description: Displays List of Online Players.
     sabotage:
-        aliases: ['st', 'help']
+        aliases: ['st', 'st help', 'sabotage help', 'help']
         description: Displays Commands for Sabotage.
 permissions:
     st.admin:
