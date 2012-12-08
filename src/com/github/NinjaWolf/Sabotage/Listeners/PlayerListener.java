@@ -1,6 +1,6 @@
 package com.github.NinjaWolf.Sabotage.Listeners;
 
-import net.minecraft.server.Packet62NamedSoundEffect;
+import net.minecraft.server.v1_4_5.Packet62NamedSoundEffect;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import com.github.NinjaWolf.Sabotage.Handlers.BombHandler;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 import com.github.NinjaWolf.Sabotage.Utils.Permissions;
@@ -79,7 +80,19 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
+        
+        if (block.getType().equals(Material.OBSIDIAN)) {
+            if (!BombHandler.getInstance().isBomb(block.getLocation()))
+                return;
+            
+            BombHandler.getInstance().handleBombCapture(block, player);
+            
+            
+            
+
+            
         }
+    }
     
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerQuit(PlayerQuitEvent event) {
