@@ -14,7 +14,7 @@ import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class TeamsHandler {
     
-    public  final HashMap<String, Integer> Teams    = new HashMap<String, Integer>();
+    public  final HashMap<String, String> Teams    = new HashMap<String, String>();
     public Teams                   Red;
     public Teams                   Blue;
     static Sabotage                st;
@@ -62,14 +62,14 @@ public class TeamsHandler {
     public void addPlayer(String team, Player player) {
         String redName = red + player.getName() + reset;
         String blueName = blue + player.getName() + reset;
-        if (team.equals("Blue")) {
-            Teams.put(player.getName(), 1);
+        if (team == "Blue") {
+            Teams.put(player.getName(), "Blue");
             player.setDisplayName(blueName);
             player.setPlayerListName(blueName);
             TagAPI.refreshPlayer(player);
             player.sendMessage(blue + "You have joined the " + bold + "BLUE" + reset + blue + " team!");
-        } else if (team.equals("Red")) {
-            Teams.put(player.getName(), 2);
+        } else if (team == "Red") {
+            Teams.put(player.getName(), "Red");
             player.setDisplayName(redName);
             player.setPlayerListName(redName);
             TagAPI.refreshPlayer(player);
@@ -81,7 +81,7 @@ public class TeamsHandler {
         Bukkit.getServer().getWorld("world").setSpawnLocation(10, 64, 10);
         Location Lobby = Bukkit.getServer().getWorld("world").getSpawnLocation();
         
-        Teams.put(player.getName(), 0);
+        Teams.put(player.getName(), "Lobby");
         player.setDisplayName(green + player.getName() + reset);
         player.setPlayerListName(green + player.getName());
         player.teleport(Lobby);
@@ -89,7 +89,7 @@ public class TeamsHandler {
     }
     
     public void removePlayer(Player player) {
-        if (Teams.get(player.getName()).equals(0)) {
+        if (Teams.get(player.getName()).equals("Lobby")) {
             Teams.remove(player.getName());
             return;
         }
@@ -110,7 +110,7 @@ public class TeamsHandler {
     }
     
     public boolean isInGame(Player player) {
-        if (Teams.get(player.getName()).equals(2) || Teams.get(player.getName()).equals(1)) {
+        if (Teams.get(player.getName()).equals("Red") || Teams.get(player.getName()).equals("Blue")) {
             return true;
         }
         return false;

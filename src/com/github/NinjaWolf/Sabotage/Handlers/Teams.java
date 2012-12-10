@@ -8,7 +8,6 @@ public class Teams {
     public static String      teamName;
     public static ChatColor   teamColor;
     public static Teams       instance    = new Teams(teamName, teamColor);
-    public final TeamsHandler teamHandler = TeamsHandler.getInstance();
     
     public static Teams getInstance() {
         return instance;
@@ -28,15 +27,23 @@ public class Teams {
     }
     
     public boolean inLobby(String playerName) {
-        return teamHandler.Teams.get(playerName).equals(0);
+        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Lobby")) {
+            return true;
+        }
+        return false;
     }
     
     public boolean inBlueTeam(String playerName) {
-        return teamHandler.Teams.get(playerName).equals(1);
+        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Blue")) {
+            return true;
+        }
+        return false;
     }
     
     public boolean inRedTeam(String playerName) {
-        return teamHandler.Teams.get(playerName).equals(2);
+        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Red")) {
+            return true;
+        }
+        return false;
     }
-    
 }

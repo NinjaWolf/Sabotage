@@ -2,6 +2,7 @@ name: Sabotage
 main: com.github.NinjaWolf.Sabotage.Sabotage
 load: STARTUP
 version: 1.0
+softdepend: [TagAPI]
 description: Custom PvP Arena Plugin
 author: NinjaWolf
 website: https://github.com/NinjaWolf/Sabotage
