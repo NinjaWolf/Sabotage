@@ -17,17 +17,17 @@ commands:
         description: Displays List of Online Players.
     sabotage:
         aliases: ['st', 'st help', 'sabotage help', 'help']
-        description: Displays Commands for Sabotage.
+        description: Displays Sabotage Help Page.
 permissions:
     st.admin:
         description: Gives Admin control over plugin.
         default: op
     st.join:
         description: Allows Player to Join the game.
-        default: op
+        default: true
     st.leave:
         description: Allows Player to Leave the game.
-        default: op
+        default: true
     st.help:
         description: Allows Player to Display Commands.
-        default: op
+        default: true

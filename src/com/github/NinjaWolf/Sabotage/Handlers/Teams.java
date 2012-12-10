@@ -5,9 +5,10 @@ import org.bukkit.ChatColor;
 
 public class Teams {
     
-    public static String    teamName;
-    public static ChatColor teamColor;
-    public static Teams     instance = new Teams(teamName, teamColor);
+    public static String      teamName;
+    public static ChatColor   teamColor;
+    public static Teams       instance    = new Teams(teamName, teamColor);
+    public final TeamsHandler teamHandler = TeamsHandler.getInstance();
     
     public static Teams getInstance() {
         return instance;
@@ -27,24 +28,15 @@ public class Teams {
     }
     
     public boolean inLobby(String playerName) {
-        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Lobby")) {
-            return true;
-        }
-        return false;
+        return teamHandler.Teams.get(playerName).equals(0);
     }
     
     public boolean inBlueTeam(String playerName) {
-        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Blue")) {
-            return true;
-        }
-        return false;
+        return teamHandler.Teams.get(playerName).equals(1);
     }
     
     public boolean inRedTeam(String playerName) {
-        if (TeamsHandler.getInstance().Teams.get(playerName).equals("Red")) {
-            return true;
-        }
-        return false;
+        return teamHandler.Teams.get(playerName).equals(2);
     }
     
 }

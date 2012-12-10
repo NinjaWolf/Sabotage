@@ -25,8 +25,7 @@ public class CommandHandler {
         }
     }
     
-    public boolean dispatch(CommandSender sender, String label, String[] args)
-    {
+    public boolean dispatch(CommandSender sender, String label, String[] args) {
         for (int argsIncluded = args.length; argsIncluded >= 0; argsIncluded--) {
             StringBuilder identifier = new StringBuilder(label);
             for (int i = 0; i < argsIncluded; i++) {
@@ -76,7 +75,7 @@ public class CommandHandler {
     {
         ident = ident.toLowerCase();
         if (identifiers.containsKey(ident))
-            return (StCommand)identifiers.get(ident);
+            return (StCommand) identifiers.get(ident);
         
         for (StCommand cmd : commands.values()) {
             if (cmd.isIdentifier(executor, ident))

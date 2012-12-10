@@ -30,7 +30,8 @@ public class Sabotage extends JavaPlugin {
     public final Configuration          config         = new Configuration(this);
     private static final CommandHandler commandHandler = new CommandHandler();
     
-    public final File                   mainConfig     = new File(getDataFolder(), "config.yml");
+    File mainConfig = new File(getDataFolder(), "config.yml");
+    File bomb = new File(getDataFolder(), "bomb.yml");
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -41,21 +42,18 @@ public class Sabotage extends JavaPlugin {
     public void onEnable() {
         PluginDescriptionFile pdfFile = getDescription();
         
-        if (!mainConfig.exists()) {
-            getConfig().options().copyDefaults(true);
-            config.save();
-        }
+        loadConfigs();
+
         registerListeners();
         registerCommands();
         
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
-            getLogger().log(Level.INFO, "Metrics Loaded.");
         } catch (IOException e) {
             getLogger().log(Level.INFO, "Metrics Couldn't Be Loaded.");
         }
-        getLogger().log(Level.INFO, "Version: " + pdfFile.getVersion() + " is now Enabled.");
+        getLogger().log(Level.INFO, "Version " + pdfFile.getVersion() + " is enabled.");
     }
     
     private void registerListeners() {
@@ -79,17 +77,29 @@ public class Sabotage extends JavaPlugin {
         }
     }
     
-    private void registerCommands() {
+    protected void registerCommands() {
         commandHandler.addCommand(new Join());
         commandHandler.addCommand(new Leave());
         commandHandler.addCommand(new ListPlayers());
         commandHandler.addCommand(new Help());
     }
     
+    public void loadConfigs() {
+        if (!mainConfig.exists()) {
+            getConfig().options().copyDefaults(true);
+            config.save();
+        }
+        
+        if (!bomb.exists()) {
+            getConfig().options().copyDefaults(true);
+            config.save();
+        }
+        
+        config.load();
+    }
+    
     public boolean isActive(String plugin) {
-        if (getServer().getPluginManager().getPlugin(plugin) != null)
-            return true;
-        return false;
+        return getServer().getPluginManager().getPlugin(plugin).isEnabled();
     }
     
     public static CommandHandler getCommandHandler() {

@@ -9,9 +9,11 @@ a Complete Server Plugin, not a mini-game.
 + Objective-Based
 + Random Team-Chooser
 + Kits (Archer/Knight/Tank/Scout)
-+ Buy special things using experience.
++ Custom Kits
++ Economy Support
 
 ## Game Objective
-You and your team must fight your way to The "Bomb" room, and capture the bomb. Next u must fight
-your way behind enemy lines, and plant the bomb in the enemy's base. This must all be done while 
-also defending your own teams base from attackers.
+You and your team must work together and fight your way to The Bomb room, and capture the bomb.
+Once one of the Teams capture the bomb, They must fight their way behind enemy lines, and plant
+the bomb in the enemy's base room. This must all be done while also defending your own teams base
+from attackers.

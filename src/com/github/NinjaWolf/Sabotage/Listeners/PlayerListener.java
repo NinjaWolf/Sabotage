@@ -82,8 +82,12 @@ public class PlayerListener implements Listener {
             }
         
         if (block.getType().equals(Material.OBSIDIAN)) {
-            if (!BombHandler.getInstance().isBomb(block.getLocation()))
+            if (!TeamsHandler.getInstance().isInGame(player)) {
                 return;
+            }
+            if (!BombHandler.getInstance().isBomb(block)) {
+                return;
+            }
             
             BombHandler.getInstance().handleBombCapture(block, player);
             
