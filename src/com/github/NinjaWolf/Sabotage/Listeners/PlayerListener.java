@@ -23,13 +23,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.github.NinjaWolf.Sabotage.Handlers.BombHandler;
+import com.github.NinjaWolf.Sabotage.Sabotage;
 import com.github.NinjaWolf.Sabotage.Handlers.Teams;
 import com.github.NinjaWolf.Sabotage.Handlers.TeamsHandler;
 import com.github.NinjaWolf.Sabotage.Utils.Permissions;
 
 
 public class PlayerListener implements Listener {
+    Sabotage plugin;
     
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -85,11 +86,11 @@ public class PlayerListener implements Listener {
             if (!TeamsHandler.getInstance().isInGame(player)) {
                 return;
             }
-            if (!BombHandler.getInstance().isBomb(block)) {
+            if (!plugin.bombHandler.isBomb(block)) {
                 return;
             }
             
-            BombHandler.getInstance().handleBombCapture(block, player);
+            plugin.bombHandler.handleBombCapture(block, player);
             
             
             
@@ -182,5 +183,9 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+    
+    public PlayerListener(Sabotage Plugin) {
+        plugin = Plugin;
     }
 }

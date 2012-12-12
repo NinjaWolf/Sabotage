@@ -15,22 +15,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class BombHandler {
-    static Sabotage Plugin;
+    static Sabotage plugin;
     private static CraftItemStack craftStack;
     private static net.minecraft.server.v1_4_5.ItemStack itemStack;
-    static BombHandler            instance = new BombHandler(Plugin);
-    
-    public static BombHandler getInstance() {
-        return instance;
-    }
     
     public void handleBombCapture(Block block, final Player player) {
         block.setType(Material.AIR);
         player.getInventory().addItem(new ItemStack(setName(new ItemStack(Material.OBSIDIAN), "Bomb")));
-        player.setMetadata("Carrier", new FixedMetadataValue(Plugin, true));
+        player.setMetadata("Carrier", new FixedMetadataValue(plugin, true));
         
 
-        Plugin.getServer().getScheduler().scheduleSyncRepeatingTask(Plugin, new Runnable() {
+        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for (Player players: Bukkit.getOnlinePlayers()) {
                     players.setCompassTarget(player.getLocation());
@@ -40,6 +35,12 @@ public class BombHandler {
         Bukkit.broadcastMessage(player.getDisplayName() + ChatColor.GREEN + "Grabbed the Bomb!");
     }
     
+    public void spawnBomb(int GameID) {
+        Block bombLoc = plugin.arena.getWorld(GameID).getBlockAt(plugin.arena.getCenterBlock(GameID));
+        bombLoc.setType(Material.OBSIDIAN);
+        bombLoc.setMetadata("Bomb", new FixedMetadataValue(plugin, true));
+    }
+
     public boolean isBomb(Block block) {
         if (!block.hasMetadata("Bomb")) {
             return false;
@@ -49,10 +50,10 @@ public class BombHandler {
     
     public Location getBomb() {
         return new Location(
-                Plugin.getServer().getWorlds().get(0),
-                Plugin.config.BOMB_X,
-                Plugin.config.BOMB_Y,
-                Plugin.config.BOMB_Z);
+                plugin.getServer().getWorlds().get(0),
+                plugin.config.BOMB_X,
+                plugin.config.BOMB_Y,
+                plugin.config.BOMB_Z);
     }
     
     public static ItemStack setName(ItemStack item, String name) {
@@ -95,6 +96,6 @@ public class BombHandler {
         }
     
     public BombHandler(Sabotage instance) {
-        Plugin = instance;
+        plugin = instance;
     }
 }
