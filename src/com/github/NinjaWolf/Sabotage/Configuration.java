@@ -40,7 +40,7 @@ public class Configuration {
         BOMB_Z = getBombConfig().getDouble("Arena.Test.Bomb.Z");
         
         ARENA_NO = getArenaConfig().getInt("Sabotage.Arenano");
-        ARENA    = getArenaConfig().getInt("Sabotage.Arena");
+        ARENA    = getArenaConfig().getInt("Sabotage.Arenas");
     }
     
     public void reloadBombConfig() {

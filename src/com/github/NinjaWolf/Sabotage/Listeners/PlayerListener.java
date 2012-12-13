@@ -86,6 +86,7 @@ public class PlayerListener implements Listener {
             if (!TeamsHandler.getInstance().isInGame(player)) {
                 return;
             }
+            
             if (!plugin.bombHandler.isBomb(block)) {
                 return;
             }

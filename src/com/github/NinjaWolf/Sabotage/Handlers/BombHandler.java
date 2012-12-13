@@ -1,5 +1,7 @@
 package com.github.NinjaWolf.Sabotage.Handlers;
 
+import java.util.HashMap;
+
 import net.minecraft.server.v1_4_5.NBTTagCompound;
 
 import org.bukkit.Bukkit;
@@ -18,6 +20,7 @@ public class BombHandler {
     static Sabotage plugin;
     private static CraftItemStack craftStack;
     private static net.minecraft.server.v1_4_5.ItemStack itemStack;
+    public HashMap<Location, Integer> Bombs = new HashMap<Location, Integer>();
     
     public void handleBombCapture(Block block, final Player player) {
         block.setType(Material.AIR);
@@ -32,28 +35,34 @@ public class BombHandler {
                 }
             }
         }, 5 * 20, 5 * 20);
-        Bukkit.broadcastMessage(player.getDisplayName() + ChatColor.GREEN + "Grabbed the Bomb!");
+        Bukkit.broadcastMessage(player.getDisplayName() + ChatColor.GREEN + " Grabbed the Bomb!");
     }
     
     public void spawnBomb(int GameID) {
-        Block bombLoc = plugin.arena.getWorld(GameID).getBlockAt(plugin.arena.getCenterBlock(GameID));
-        bombLoc.setType(Material.OBSIDIAN);
-        bombLoc.setMetadata("Bomb", new FixedMetadataValue(plugin, true));
+        Block bomb = plugin.arena.getWorld(GameID).getBlockAt(plugin.arena.getCenterBlock(GameID));
+        Location bombLoc = bomb.getLocation();
+        bomb.setType(Material.OBSIDIAN);
+        bomb.setMetadata("Bomb", new FixedMetadataValue(plugin, true));
+        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.x", bombLoc.getBlockX());
+        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.y", bombLoc.getBlockY());
+        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.z", bombLoc.getBlockZ());
+        this.Bombs.put(bombLoc, GameID);
     }
 
     public boolean isBomb(Block block) {
         if (!block.hasMetadata("Bomb")) {
             return false;
         }
-        return this.getBomb().equals(block.getLocation());
+        int GameID = this.Bombs.get(block.getLocation());
+        return this.getBomb(GameID).equals(block.getLocation());
     }
     
-    public Location getBomb() {
+    public Location getBomb(int GameID) {
         return new Location(
-                plugin.getServer().getWorlds().get(0),
-                plugin.config.BOMB_X,
-                plugin.config.BOMB_Y,
-                plugin.config.BOMB_Z);
+                plugin.arena.getWorld(GameID),
+                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.x"),
+                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.y"),
+                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.z"));
     }
     
     public static ItemStack setName(ItemStack item, String name) {
@@ -95,7 +104,7 @@ public class BombHandler {
         return tag.getString("Name");
         }
     
-    public BombHandler(Sabotage instance) {
-        plugin = instance;
+    public BombHandler(Sabotage Plugin) {
+        plugin = Plugin;
     }
 }

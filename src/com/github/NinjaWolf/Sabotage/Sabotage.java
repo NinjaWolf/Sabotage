@@ -38,7 +38,7 @@ public class Sabotage extends JavaPlugin {
     public final ArenaHandler           arenaHandler   = new ArenaHandler(this);
     public final BombHandler            bombHandler    = new BombHandler(this);
     public final Arena                  arena          = new Arena(this);
-    public final Game                   gameManager    = new Game(0);
+    public final Game                   gameManager    = new Game(this);
     private static final CommandHandler commandHandler = new CommandHandler();
     private static WorldEditPlugin worldEditPlugin;
     
@@ -107,8 +107,7 @@ public class Sabotage extends JavaPlugin {
         if (!arenas.exists()) {
             config.reloadArenaConfig();
         }
-        
-        config.load();
+
     }
     
     private void setupWorldEdit() {
