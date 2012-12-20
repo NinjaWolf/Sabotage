@@ -1,6 +1,5 @@
 package com.github.NinjaWolf.Sabotage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -34,17 +33,12 @@ public class Sabotage extends JavaPlugin {
     private final PlayerListener        playerListener = new PlayerListener(this);
     private final BlockListener         blockListener  = new BlockListener();
     private final TagAPI_Listener       tagapiListener = new TagAPI_Listener(this);
-    public final Configuration          config         = new Configuration(this);
     public final ArenaHandler           arenaHandler   = new ArenaHandler(this);
     public final BombHandler            bombHandler    = new BombHandler(this);
     public final Arena                  arena          = new Arena(this);
     public final Game                   gameManager    = new Game(this);
     private static final CommandHandler commandHandler = new CommandHandler();
     private static WorldEditPlugin worldEditPlugin;
-    
-    File mainConfig = new File(getDataFolder(), "config.yml");
-    File bomb = new File(getDataFolder(), "bomb.yml");
-    File arenas = new File(getDataFolder(), "arenas.yml");
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -55,7 +49,7 @@ public class Sabotage extends JavaPlugin {
     public void onEnable() {
         PluginDescriptionFile pdfFile = getDescription();
         
-        loadConfigs();
+        Configuration.getInstance().init(this);
 
         registerListeners();
         registerCommands();
@@ -93,21 +87,6 @@ public class Sabotage extends JavaPlugin {
         commandHandler.addCommand(new ListPlayers());
         commandHandler.addCommand(new Create(this));
         commandHandler.addCommand(new Help());
-    }
-    
-    public void loadConfigs() {
-        if (!mainConfig.exists()) {
-            getConfig().options().copyDefaults(true);
-        }
-        
-        if (!bomb.exists()) {
-            config.reloadBombConfig();
-        }
-        
-        if (!arenas.exists()) {
-            config.reloadArenaConfig();
-        }
-
     }
     
     private void setupWorldEdit() {

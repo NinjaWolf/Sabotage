@@ -7,47 +7,50 @@ import java.util.logging.Level;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public class Configuration {
     
-    public Sabotage plugin;
-    
+    private static Configuration instance = new Configuration();
+    private static Plugin plugin;
     private FileConfiguration bombConfig = null;
-    private File bombConfigFile = null;
+    public File bombs = null;
     private FileConfiguration arenaConfig = null;
-    private File arenaConfigFile = null;
+    public File arenas = null;
     
-    public double BOMB_X;
-    public double BOMB_Y;
-    public double BOMB_Z;
-    
-    public int ARENA_NO;
-    public int ARENA;
-    
-    public void save() {
-        plugin.saveConfig();
-        this.saveBombConfig();
-        this.saveArenaConfig();
+    public static Configuration getInstance() {
+        return instance;
     }
     
-    public void load() {
-        plugin.reloadConfig();
-        this.reloadBombConfig();
-        this.reloadArenaConfig();
-        
-        BOMB_X = getBombConfig().getDouble("Sabotage.Arenas.Bomb.X");
-        BOMB_Y = getBombConfig().getDouble("Arena.Test.Bomb.Y");
-        BOMB_Z = getBombConfig().getDouble("Arena.Test.Bomb.Z");
-        
-        ARENA_NO = getArenaConfig().getInt("Sabotage.Arenano");
-        ARENA    = getArenaConfig().getInt("Sabotage.Arenas");
+    public void init(Plugin p)
+    {
+      plugin = p;
+
+      p.getConfig().options().copyDefaults(true);
+      p.saveDefaultConfig();
+
+      this.arenas = new File(plugin.getDataFolder(), "arenas.yml");
+      this.bombs = new File(plugin.getDataFolder(), "bomb.yml");
+      try {
+        if (!this.arenas.exists())
+          this.arenas.createNewFile();
+        if (!this.bombs.exists())
+          this.bombs.createNewFile(); 
+      } catch (Exception localException) {  }
+
+      reloadArenas();
+      saveArenas();
+      reloadArenas();
+      reloadBombs();
+      saveBombs();
+      reloadBombs();
     }
     
-    public void reloadBombConfig() {
-        if (bombConfigFile == null) {
-        bombConfigFile = new File(plugin.getDataFolder(), "bomb.yml");
+    public void reloadBombs() {
+        if (bombs == null) {
+        bombs = new File(plugin.getDataFolder(), "bomb.yml");
         }
-        bombConfig = YamlConfiguration.loadConfiguration(bombConfigFile);
+        bombConfig = YamlConfiguration.loadConfiguration(bombs);
 
         InputStream defConfigStream = plugin.getResource("bomb.yml");
         if (defConfigStream != null) {
@@ -56,56 +59,49 @@ public class Configuration {
         }
     }
     
-    public void reloadArenaConfig() {
-        if(arenaConfigFile == null) {
-            arenaConfigFile = new File(plugin.getDataFolder(), "arenas.yml");
-        }
-        arenaConfig = YamlConfiguration.loadConfiguration(arenaConfigFile);
+    public void reloadArenas() {
+        arenaConfig = YamlConfiguration.loadConfiguration(arenas);
         
         InputStream defConfigStream = plugin.getResource("arenas.yml");
         if (defConfigStream != null) {
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            bombConfig.setDefaults(defConfig);
+            arenaConfig.setDefaults(defConfig);
         }
     }
     
     public FileConfiguration getBombConfig() {
         if (bombConfig == null) {
-            this.reloadBombConfig();
+            this.reloadBombs();
         }
         return bombConfig;
     }
     
     public FileConfiguration getArenaConfig() {
         if(arenaConfig == null) {
-            this.reloadArenaConfig();
+            this.reloadArenas();
         }
         return arenaConfig;
     }
     
-    public void saveBombConfig() {
-        if (bombConfig == null || bombConfigFile == null) {
+    public void saveBombs() {
+        if (bombConfig == null || bombs == null) {
         return;
         }
         try {
-            getBombConfig().save(bombConfigFile);
+            getBombConfig().save(bombs);
         } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + bombConfigFile, ex);
+            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + bombs, ex);
         }
     }
     
-    public void saveArenaConfig() {
-        if (arenaConfig == null || arenaConfigFile == null) {
+    public void saveArenas() {
+        if (arenaConfig == null || arenas == null) {
             return;
         }
         try {
-            getArenaConfig().save(arenaConfigFile);
+            getArenaConfig().save(arenas);
         } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + arenaConfigFile, ex);
+            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + arenas, ex);
         }
-    }
-    
-    public Configuration(Sabotage instance) {
-        plugin = instance;
     }
 }

@@ -1,8 +1,10 @@
 package com.github.NinjaWolf.Sabotage.Handlers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,22 +14,32 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import com.github.NinjaWolf.Sabotage.Configuration;
 import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class BombHandler {
     static Sabotage plugin;
-    private static CraftItemStack craftStack;
-    private static net.minecraft.server.v1_4_5.ItemStack itemStack;
     public HashMap<Location, Integer> Bombs = new HashMap<Location, Integer>();
-    
+
     public void handleBombCapture(Block block, final Player player) {
         block.setType(Material.AIR);
-        player.getInventory().addItem(new ItemStack(setName(new ItemStack(Material.OBSIDIAN), "Bomb")));
+        ItemStack bomb = new ItemStack(Material.OBSIDIAN);
+        ItemMeta bombMeta = bomb.getItemMeta();
+
+        bombMeta.setDisplayName("§r§bBomb");
+        addGlow(bomb);
+        ArrayList<String> lore = new ArrayList<String>();
+        lore.add("§aPlant this bomb in");
+        lore.add("§ayour enemy's base");
+        bombMeta.setLore(lore);
+        bomb.setItemMeta(bombMeta);
+
+        player.getInventory().addItem(bomb);
         player.setMetadata("Carrier", new FixedMetadataValue(plugin, true));
         
-
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for (Player players: Bukkit.getOnlinePlayers()) {
@@ -38,14 +50,15 @@ public class BombHandler {
         Bukkit.broadcastMessage(player.getDisplayName() + ChatColor.GREEN + " Grabbed the Bomb!");
     }
     
-    public void spawnBomb(int GameID) {
-        Block bomb = plugin.arena.getWorld(GameID).getBlockAt(plugin.arena.getCenterBlock(GameID));
+    public void spawnBomb(int GameID, String name) {
+        Block bomb = plugin.arena.getWorld(name).getBlockAt(plugin.arena.getCenterBlock(name));
         Location bombLoc = bomb.getLocation();
         bomb.setType(Material.OBSIDIAN);
         bomb.setMetadata("Bomb", new FixedMetadataValue(plugin, true));
-        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.x", bombLoc.getBlockX());
-        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.y", bombLoc.getBlockY());
-        plugin.config.getBombConfig().set("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.z", bombLoc.getBlockZ());
+        Configuration.getInstance().getBombConfig().set("Sabotage.Arenas." + name + ".Bomb.x", bombLoc.getBlockX());
+        Configuration.getInstance().getBombConfig().set("Sabotage.Arenas." + name + ".Bomb.y", bombLoc.getBlockY());
+        Configuration.getInstance().getBombConfig().set("Sabotage.Arenas." + name + ".Bomb.z", bombLoc.getBlockZ());
+        Configuration.getInstance().saveBombs();
         this.Bombs.put(bombLoc, GameID);
     }
 
@@ -54,55 +67,30 @@ public class BombHandler {
             return false;
         }
         int GameID = this.Bombs.get(block.getLocation());
-        return this.getBomb(GameID).equals(block.getLocation());
+        return this.getBomb(plugin.gameManager.gameInfo.get(GameID)).equals(block.getLocation());
     }
     
-    public Location getBomb(int GameID) {
+    public Location getBomb(String GameName) {
         return new Location(
-                plugin.arena.getWorld(GameID),
-                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.x"),
-                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.y"),
-                plugin.config.getBombConfig().getInt("Sabotage.Arenas." + plugin.gameManager.getID() + ".Bomb.z"));
+                plugin.arena.getWorld(GameName),
+                Configuration.getInstance().getBombConfig().getInt("Sabotage.Arenas." + GameName + ".Bomb.x"),
+                Configuration.getInstance().getBombConfig().getInt("Sabotage.Arenas." + GameName + ".Bomb.y"),
+                Configuration.getInstance().getBombConfig().getInt("Sabotage.Arenas." + GameName + ".Bomb.z"));
     }
     
-    public static ItemStack setName(ItemStack item, String name) {
-        if (item instanceof CraftItemStack) {
-        craftStack = (CraftItemStack) item;
-        itemStack = craftStack.getHandle();
+    public static ItemStack addGlow(ItemStack item) {
+        net.minecraft.server.v1_4_5.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound tag = null;
+        if (!nmsStack.hasTag()) {
+            tag = new NBTTagCompound();
+            nmsStack.setTag(tag);
         }
-        else if (item instanceof ItemStack) {
-        craftStack = new CraftItemStack(item);
-        itemStack = craftStack.getHandle();
-        }
-        NBTTagCompound tag = itemStack.tag;
-        if (tag == null) {
-        tag = new NBTTagCompound();
-        tag.setCompound("display", new NBTTagCompound());
-        itemStack.tag = tag;
-        }
-         
-        tag = itemStack.tag.getCompound("display");
-        tag.setString("Name", name);
-        itemStack.tag.setCompound("display§r", tag);
-        return craftStack;
-        }
-    
-    public static String getName(ItemStack item) {
-        if (item instanceof CraftItemStack) {
-        craftStack = (CraftItemStack) item;
-        itemStack = craftStack.getHandle();
-        }
-        else if (item instanceof ItemStack) {
-        craftStack = new CraftItemStack(item);
-        itemStack = craftStack.getHandle();
-        }
-        NBTTagCompound tag = itemStack.tag;
-        if (tag == null) {
-        return null;
-        }
-        tag = itemStack.tag.getCompound("display");
-        return tag.getString("Name");
-        }
+        if (tag == null) tag = nmsStack.getTag();
+        NBTTagList ench = new NBTTagList();
+        tag.set("ench", ench);
+        nmsStack.setTag(tag);
+        return CraftItemStack.asBukkitCopy(nmsStack);
+    }
     
     public BombHandler(Sabotage Plugin) {
         plugin = Plugin;

@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.github.NinjaWolf.Sabotage.Configuration;
 import com.github.NinjaWolf.Sabotage.Sabotage;
 
 public class Arena {
@@ -16,21 +17,20 @@ public class Arena {
       this.min = min;
     }
 
-    public World getWorld(int gameID) {
-        String World = plugin.config.getArenaConfig().getString("Sabotage.Arenas." + gameID + ".world");
-        if(World == null) {
-            return plugin.getServer().getWorld("world");
-        }
+    public World getWorld(String gameName) {
+        Configuration.getInstance().reloadArenas();
+        String World = Configuration.getInstance().getArenaConfig().getString("Sabotage.Arenas." + gameName + ".world");
         return plugin.getServer().getWorld(World);
     }
     
-    public Location getCenterBlock(int gameID) {
-        FileConfiguration c = plugin.config.getArenaConfig();
-        String arena = "Sabotage.Arenas." + plugin.gameManager.getID();
+    public Location getCenterBlock(String name) {
+        FileConfiguration c = Configuration.getInstance().getArenaConfig();
+        Configuration.getInstance().reloadArenas();
+        String arena = "Sabotage.Arenas." + name;
         int x = (c.getInt(arena + ".x1") + c.getInt(arena + ".x2")) / 2;
         int y = (c.getInt(arena + ".y1"));
         int z = (c.getInt(arena + ".z1") + c.getInt(arena + ".z2")) / 2;
-        return new Location(getWorld(gameID), x, y, z);
+        return new Location(getWorld(name), x, y, z);
     }
     
     public boolean containsBlock(Location v) {
