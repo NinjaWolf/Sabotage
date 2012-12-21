@@ -1,6 +1,6 @@
 package com.github.NinjaWolf.Sabotage.Listeners;
 
-import net.minecraft.server.v1_4_5.Packet62NamedSoundEffect;
+import net.minecraft.server.v1_4_6.Packet62NamedSoundEffect;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -180,7 +180,7 @@ public class PlayerListener implements Listener {
                 
                 if (TeamsHandler.getInstance().isInGame(shooter)) {
                     Packet62NamedSoundEffect packet = new Packet62NamedSoundEffect("random.orb", sLoc.getX(), sLoc.getY(), sLoc.getZ(), 1.0F, 0.0F);
-                    ((CraftPlayer)shooter).getHandle().netServerHandler.sendPacket(packet);
+                    ((CraftPlayer)shooter).getHandle().playerConnection.sendPacket(packet);
                 }
             }
         }

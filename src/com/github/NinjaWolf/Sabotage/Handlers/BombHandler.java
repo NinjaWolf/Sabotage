@@ -3,15 +3,15 @@ package com.github.NinjaWolf.Sabotage.Handlers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,17 +27,19 @@ public class BombHandler {
     public void handleBombCapture(Block block, final Player player) {
         block.setType(Material.AIR);
         ItemStack bomb = new ItemStack(Material.OBSIDIAN);
+        ItemStack test = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta bombMeta = bomb.getItemMeta();
 
-        bombMeta.setDisplayName("§r§bBomb");
-        addGlow(bomb);
         ArrayList<String> lore = new ArrayList<String>();
-        lore.add("§aPlant this bomb in");
-        lore.add("§ayour enemy's base");
+        lore.add("§aPlant this bomb");
+        lore.add("§ain enemy's base");
+        bombMeta.setDisplayName("§rBomb");
         bombMeta.setLore(lore);
         bomb.setItemMeta(bombMeta);
+        bomb = addGlow(bomb);
 
         player.getInventory().addItem(bomb);
+        player.getInventory().addItem(test);
         player.setMetadata("Carrier", new FixedMetadataValue(plugin, true));
         
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
@@ -78,8 +80,8 @@ public class BombHandler {
                 Configuration.getInstance().getBombConfig().getInt("Sabotage.Arenas." + GameName + ".Bomb.z"));
     }
     
-    public static ItemStack addGlow(ItemStack item) {
-        net.minecraft.server.v1_4_5.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+    public static ItemStack addGlow(ItemStack item){   
+        net.minecraft.server.v1_4_6.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag = null;
         if (!nmsStack.hasTag()) {
             tag = new NBTTagCompound();
@@ -89,7 +91,7 @@ public class BombHandler {
         NBTTagList ench = new NBTTagList();
         tag.set("ench", ench);
         nmsStack.setTag(tag);
-        return CraftItemStack.asBukkitCopy(nmsStack);
+        return CraftItemStack.asCraftMirror(nmsStack);
     }
     
     public BombHandler(Sabotage Plugin) {

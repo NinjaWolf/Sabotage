@@ -39,10 +39,6 @@ public class Configuration {
       } catch (Exception localException) {  }
 
       reloadArenas();
-      saveArenas();
-      reloadArenas();
-      reloadBombs();
-      saveBombs();
       reloadBombs();
     }
     
