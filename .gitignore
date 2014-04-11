@@ -1,7 +1,10 @@
-#Eclipse Files
+#IDE Files
+PearlControl.iml
+.idea
 .classpath
 .project
 .settings/
 #Extracrap
 bin/
 target/
+.idea/
