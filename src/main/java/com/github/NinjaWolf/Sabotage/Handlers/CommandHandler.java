@@ -55,21 +55,21 @@ public class CommandHandler {
     }
     
     private void displayCommandHelp(StCommand cmd, CommandSender sender) {
-        sender.sendMessage(new StringBuilder().append("�cCommand:�e ").append(cmd.getName()).toString());
-        sender.sendMessage(new StringBuilder().append("�cDescription:�e ").append(cmd.getDescription()).toString());
-        sender.sendMessage(new StringBuilder().append("�cUsage:�e ").append(cmd.getUsage()).toString());
+        sender.sendMessage("�cCommand:�e " + cmd.getName());
+        sender.sendMessage("�cDescription:�e " + cmd.getDescription());
+        sender.sendMessage("�cUsage:�e " + cmd.getUsage());
         if (cmd.getNotes() != null) {
             for (String note : cmd.getNotes()) {
-                sender.sendMessage(new StringBuilder().append("�e").append(note).toString());
+                sender.sendMessage("�e" + note);
             }
         }
     }
     
-    public StCommand getCmdFromIdent(String ident, CommandSender executor)
+    StCommand getCmdFromIdent(String ident, CommandSender executor)
     {
         ident = ident.toLowerCase();
         if (identifiers.containsKey(ident))
-            return (StCommand) identifiers.get(ident);
+            return identifiers.get(ident);
         
         for (StCommand cmd : commands.values()) {
             if (cmd.isIdentifier(executor, ident))

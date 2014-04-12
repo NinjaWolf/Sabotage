@@ -23,16 +23,15 @@ public class Create extends Commands {
     
     public Sabotage plugin;
     
-    
-    @Override
+
     public boolean execute(CommandSender sender, String identifier, String[] args) {
-        List<String> types = Arrays.asList(new String[] { "ARENA"});
+        List<String> types = Arrays.asList("ARENA");
         if (!types.contains(args[0].toUpperCase(Locale.ENGLISH))) {
             return false;
         }
         
         if (args[0].equalsIgnoreCase("Arena")) {
-            plugin.arenaHandler.createArena((Player)sender, args[1].toString());
+            plugin.arenaHandler.createArena((Player)sender, args[1]);
             return true;
         } else
         return false;

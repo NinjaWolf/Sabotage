@@ -61,13 +61,13 @@ public class TeamsHandler {
     public void addPlayer(String team, Player player) {
         String redName = red + player.getName() + reset;
         String blueName = blue + player.getName() + reset;
-        if (team == "Blue") {
+        if (team.equals( "Blue")) {
             Teams.put(player.getName(), "Blue");
             player.setDisplayName(blueName);
             player.setPlayerListName(blueName);
             TagAPI.refreshPlayer(player);
             player.sendMessage(blue + "You have joined the " + bold + "BLUE" + reset + blue + " team!");
-        } else if (team == "Red") {
+        } else if (team.equals("Red")) {
             Teams.put(player.getName(), "Red");
             player.setDisplayName(redName);
             player.setPlayerListName(redName);

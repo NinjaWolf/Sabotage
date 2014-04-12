@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
-        Sign sign = null;
+        Sign sign;
         
         if (block == null)
             return;

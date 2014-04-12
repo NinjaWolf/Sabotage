@@ -1,0 +1,41 @@
+name: Sabotage
+main: com.github.NinjaWolf.Sabotage.Sabotage
+author: NinjaWolf
+description: Custom PvP Arena Plugin
+website: https://github.com/NinjaWolf/Sabotage
+version: 1.0
+load: STARTUP
+depend: [WorldEdit]
+softdepend: [TagAPI]
+commands:
+    join:
+        aliases: ['st join', 'sabotage join']
+        description: Joins the Game.
+    leave:
+        aliases: ['st leave', 'sabotage leave']
+        description: Leaves the Game.
+    list:
+        aliases: ['st list', 'sabotage list']
+        description: Displays List of Online Players.
+    create:
+        aliases: ['st create', 'sabotage create']
+        description: Creates IDK. TODO
+    sabotage:
+        aliases: ['st', 'st help', 'sabotage help', 'help']
+        description: Displays Sabotage Help Page.
+permissions:
+    st.admin:
+        description: Gives Admin control over plugin.
+        default: op
+    st.join:
+        description: Allows Player to Join the game.
+        default: true
+    st.leave:
+        description: Allows Player to Leave the game.
+        default: true
+    st.create:
+        description: Allows Player to Create Game Arenas.
+        default: op
+    st.help:
+        description: Allows Player to Display Commands.
+        default: true
